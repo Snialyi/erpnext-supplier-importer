@@ -1,0 +1,15 @@
+*.egg-info/
+*.py[cod]
+*.swp
+.DS_Store
+.coverage
+.idea/
+.pytest_cache/
+.ruff_cache/
+.venv/
+.vscode/
+__pycache__/
+build/
+dist/
+node_modules/
+

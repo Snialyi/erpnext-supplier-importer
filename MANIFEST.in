@@ -1,0 +1,6 @@
+include README.md
+include license.txt
+include requirements.txt
+recursive-include supplier_invoice_importer *.css *.csv *.html *.ico *.js *.json *.md *.png *.py *.svg *.txt
+recursive-exclude supplier_invoice_importer *.pyc
+
