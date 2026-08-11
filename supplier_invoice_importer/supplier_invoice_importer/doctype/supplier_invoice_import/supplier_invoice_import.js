@@ -99,33 +99,44 @@ function setup_resizable_item_columns(frm) {
     apply_grid_column_width(grid, fieldname, width);
   });
 
-  grid.wrapper
-    .find(".grid-heading-row .grid-row:not(.filter-row) > .grid-static-col[data-fieldname]")
-    .each((index, element) => {
-      const column = $(element);
-      if (column.find(".sii-column-resizer").length) return;
+  const header = grid.header_row && grid.header_row.row;
+  if (!header || !header.length) return;
+
+  header
+    .off("pointermove.sii-column-edge pointerleave.sii-column-edge pointerdown.sii-column-edge")
+    .on("pointermove.sii-column-edge", ".grid-static-col[data-fieldname]", function (event) {
+      const column = $(this);
+      const edge_distance = column.get(0).getBoundingClientRect().right - event.clientX;
+      const near_edge = edge_distance >= 0 && edge_distance <= 8;
+      column.toggleClass("sii-resize-edge", near_edge);
+    })
+    .on("pointerleave.sii-column-edge", ".grid-static-col[data-fieldname]", function () {
+      $(this).removeClass("sii-resize-edge");
+    })
+    .on("pointerdown.sii-column-edge", ".grid-static-col[data-fieldname]", function (event) {
+      const column = $(this);
+      const edge_distance = column.get(0).getBoundingClientRect().right - event.clientX;
+      if (edge_distance < 0 || edge_distance > 8) return;
+
+      event.preventDefault();
+      event.stopPropagation();
       const fieldname = column.attr("data-fieldname");
-      $('<span class="sii-column-resizer" title="Потягніть, щоб змінити ширину"></span>')
-        .appendTo(column)
-        .on("pointerdown", (event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          const start_x = event.pageX;
-          const start_width = column.outerWidth();
-          $(document.body).addClass("sii-resizing-column");
-          $(document)
-            .off("pointermove.sii-column-resize pointerup.sii-column-resize")
-            .on("pointermove.sii-column-resize", (move_event) => {
-              const width = Math.max(70, Math.min(600, start_width + move_event.pageX - start_x));
-              apply_grid_column_width(grid, fieldname, width);
-            })
-            .on("pointerup.sii-column-resize", () => {
-              const saved_widths = get_saved_grid_widths();
-              saved_widths[fieldname] = Math.round(column.outerWidth());
-              localStorage.setItem("sii-item-column-widths", JSON.stringify(saved_widths));
-              $(document.body).removeClass("sii-resizing-column");
-              $(document).off("pointermove.sii-column-resize pointerup.sii-column-resize");
-            });
+      const start_x = event.clientX;
+      const start_width = column.outerWidth();
+      $(document.body).addClass("sii-resizing-column");
+      $(document)
+        .off("pointermove.sii-column-resize pointerup.sii-column-resize")
+        .on("pointermove.sii-column-resize", (move_event) => {
+          const width = Math.max(70, Math.min(600, start_width + move_event.clientX - start_x));
+          apply_grid_column_width(grid, fieldname, width);
+        })
+        .on("pointerup.sii-column-resize", () => {
+          const saved_widths = get_saved_grid_widths();
+          saved_widths[fieldname] = Math.round(column.outerWidth());
+          localStorage.setItem("sii-item-column-widths", JSON.stringify(saved_widths));
+          column.removeClass("sii-resize-edge");
+          $(document.body).removeClass("sii-resizing-column");
+          $(document).off("pointermove.sii-column-resize pointerup.sii-column-resize");
         });
     });
 }
