@@ -9,9 +9,21 @@
   flex: 0 0 calc(100% - 52px) !important;
 }
 
-.sii-expanded-form [data-fieldname="items"] .grid-heading-row .sii-resize-edge {
+.sii-expanded-form [data-fieldname="items"] .grid-heading-row .grid-static-col {
+  position: relative;
+}
+
+.sii-column-resizer {
+  position: absolute;
+  top: 0;
+  right: -6px;
+  z-index: 20;
+  width: 12px;
+  height: 100%;
   cursor: col-resize;
-  box-shadow: inset -2px 0 var(--primary);
+  user-select: none;
+  border-right: 1px dashed var(--gray-500);
+  opacity: 0.45;
 }
 
 .sii-resizing-column,
@@ -39,6 +51,12 @@
 .sii-filter-count {
   color: var(--text-muted);
   white-space: nowrap;
+}
+
+.sii-column-resizer:hover,
+.sii-column-resizer:active {
+  border-right: 2px solid var(--primary);
+  opacity: 1;
 }
 
 .sii-expanded-form [data-fieldname="items"] .sii-rate-increased {
