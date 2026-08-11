@@ -9,6 +9,16 @@
   flex: 1 1 100% !important;
 }
 
+.sii-expanded-form.sii-right-sidebar-open .layout-main-section-wrapper {
+  width: calc(100% - var(--form-sidebar-width, 320px)) !important;
+  flex: 0 0 calc(100% - var(--form-sidebar-width, 320px)) !important;
+}
+
+.sii-expanded-form.sii-right-sidebar-open .form-sidebar {
+  width: var(--form-sidebar-width, 320px) !important;
+  flex: 0 0 var(--form-sidebar-width, 320px) !important;
+}
+
 .sii-expanded-form [data-fieldname="items"] .grid-heading-row .grid-static-col {
   position: relative;
 }
@@ -145,8 +155,19 @@
   color: var(--text-color);
 }
 
+.sii-sidebar-action svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 @media (max-width: 991px) {
-  .sii-sidebar-toggle.sidebar-open {
-    right: 0;
+  .sii-expanded-form.sii-right-sidebar-open .layout-main-section-wrapper {
+    width: calc(100% - var(--form-sidebar-width, 300px)) !important;
+    flex-basis: calc(100% - var(--form-sidebar-width, 300px)) !important;
   }
 }

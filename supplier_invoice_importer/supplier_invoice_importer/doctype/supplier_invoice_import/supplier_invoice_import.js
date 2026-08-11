@@ -39,39 +39,36 @@ function setup_sidebar_arrow(frm, sidebar_wrapper) {
       .appendTo(frm.page.wrapper)
       .on("click", () => {
         frm.toolbar.setup_sidebar_toggle(sidebar_wrapper);
-        setTimeout(() => update_sidebar_arrow(button, sidebar_wrapper), 50);
+        setTimeout(() => update_sidebar_arrow(frm, button, sidebar_wrapper), 50);
       });
   }
-  update_sidebar_arrow(button, sidebar_wrapper);
+  update_sidebar_arrow(frm, button, sidebar_wrapper);
 }
 
-function update_sidebar_arrow(button, sidebar_wrapper) {
+function update_sidebar_arrow(frm, button, sidebar_wrapper) {
   const is_open = sidebar_wrapper.is(":visible");
+  frm.page.wrapper.toggleClass("sii-right-sidebar-open", is_open);
   button
     .html(frappe.utils.icon(is_open ? "right" : "left", "sm"))
     .attr("aria-label", is_open ? "Сховати праву панель" : "Показати праву панель")
     .attr("title", is_open ? "Сховати праву панель" : "Показати праву панель")
     .toggleClass("sidebar-open", is_open);
-  frm_sidebar_actions(button).toggleClass("sidebar-open", is_open);
-}
-
-function frm_sidebar_actions(button) {
-  return button.parent().find(".sii-sidebar-actions");
+  $(document.body).find(".sii-sidebar-actions").toggleClass("sidebar-open", is_open);
 }
 
 function setup_sidebar_actions(frm, sidebar_wrapper) {
-  let actions = frm.page.wrapper.find(".sii-sidebar-actions");
+  let actions = $(document.body).find(".sii-sidebar-actions");
   if (!actions.length) {
     actions = $('<div class="sii-sidebar-actions" aria-label="Швидкі дії правої панелі"></div>')
-      .appendTo(frm.page.wrapper);
+      .appendTo(document.body);
     [
-      ["users", "Призначити", ".add-assignment-label"],
-      ["paperclip", "Додати вкладення", ".add-attachment-btn"],
-      ["tag", "Додати тег", ".form-tags .form-sidebar-label"],
-      ["share-2", "Поділитися", ".share-label"],
-    ].forEach(([icon, title, selector]) => {
+      [sidebar_action_icon("users"), "Призначити", ".add-assignment-label"],
+      [sidebar_action_icon("paperclip"), "Додати вкладення", ".add-attachment-btn"],
+      [sidebar_action_icon("tag"), "Додати тег", ".form-tags .form-sidebar-label"],
+      [sidebar_action_icon("share"), "Поділитися", ".share-label"],
+    ].forEach(([icon_markup, title, selector]) => {
       $('<button type="button" class="sii-sidebar-action"></button>')
-        .html(frappe.utils.icon(icon, "sm"))
+        .html(icon_markup)
         .attr("aria-label", title)
         .attr("title", title)
         .appendTo(actions)
@@ -81,13 +78,23 @@ function setup_sidebar_actions(frm, sidebar_wrapper) {
   actions.toggleClass("sidebar-open", sidebar_wrapper.is(":visible"));
 }
 
+function sidebar_action_icon(name) {
+  const icons = {
+    users: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"></circle><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5"></path><path d="M15 5.5a3 3 0 0 1 0 5.5M16 14c2.6.3 4.5 2.1 4.5 5"></path></svg>',
+    paperclip: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 12 6.4-6.4a3.5 3.5 0 0 1 5 5L11 20a5 5 0 0 1-7-7l9-9"></path></svg>',
+    tag: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 13 12 21 3 12V3h9l8 8a1.4 1.4 0 0 1 0 2Z"></path><circle cx="8" cy="8" r="1.5"></circle></svg>',
+    share: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="2.5"></circle><circle cx="6" cy="12" r="2.5"></circle><circle cx="18" cy="19" r="2.5"></circle><path d="m8.2 10.8 7.6-4.5M8.2 13.2l7.6 4.5"></path></svg>',
+  };
+  return icons[name];
+}
+
 function open_sidebar_action(frm, sidebar_wrapper, selector) {
   if (!sidebar_wrapper.is(":visible")) {
     frm.toolbar.setup_sidebar_toggle(sidebar_wrapper);
   }
   const arrow = frm.page.wrapper.find(".sii-sidebar-toggle");
   setTimeout(() => {
-    update_sidebar_arrow(arrow, sidebar_wrapper);
+    update_sidebar_arrow(frm, arrow, sidebar_wrapper);
     sidebar_wrapper.find(selector).first().trigger("click");
   }, 80);
 }
