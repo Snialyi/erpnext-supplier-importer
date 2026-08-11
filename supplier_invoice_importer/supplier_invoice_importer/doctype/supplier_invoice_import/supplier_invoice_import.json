@@ -1,6 +1,6 @@
 {
  "actions": [], "allow_rename": 0, "autoname": "format:SII-{YYYY}-{#####}", "creation": "2026-08-11 00:00:00.000000", "doctype": "DocType", "engine": "InnoDB",
- "field_order": ["supplier", "company", "source_file", "section_document", "supplier_invoice_no", "supplier_invoice_date", "warehouse", "currency", "conversion_rate", "payment_due_date", "section_status", "import_status", "file_hash", "duplicate_of", "purchase_receipt", "purchase_invoice", "items", "section_totals", "total_lines", "total_qty", "total_amount", "base_total_amount"],
+ "field_order": ["supplier", "company", "source_file", "section_document", "supplier_invoice_no", "supplier_invoice_date", "warehouse", "default_item_group", "currency", "conversion_rate", "payment_due_date", "section_status", "import_status", "file_hash", "duplicate_of", "purchase_receipt", "purchase_invoice", "items", "section_totals", "total_lines", "total_qty", "total_amount", "base_total_amount"],
  "fields": [
   {"fieldname":"supplier","fieldtype":"Link","label":"Supplier","options":"Supplier","reqd":1,"in_list_view":1},
   {"fieldname":"company","fieldtype":"Link","label":"Company","options":"Company","reqd":1},
@@ -9,11 +9,12 @@
   {"fieldname":"supplier_invoice_no","fieldtype":"Data","label":"Supplier Invoice No","in_list_view":1},
   {"fieldname":"supplier_invoice_date","fieldtype":"Date","label":"Supplier Invoice Date"},
   {"fieldname":"warehouse","fieldtype":"Link","label":"Accepted Warehouse","options":"Warehouse","reqd":1},
+  {"fieldname":"default_item_group","fieldtype":"Link","label":"Item Group for New Items","options":"Item Group","reqd":1},
   {"default":"UAH","fieldname":"currency","fieldtype":"Link","label":"Currency","options":"Currency","reqd":1},
   {"default":"1","fieldname":"conversion_rate","fieldtype":"Float","label":"Exchange Rate","reqd":1},
   {"fieldname":"payment_due_date","fieldtype":"Date","label":"Payment Due Date"},
   {"fieldname":"section_status","fieldtype":"Section Break","label":"Import Status"},
-  {"default":"Draft","fieldname":"import_status","fieldtype":"Select","label":"Status","options":"Draft\nAnalyzed\nReady\nImported\nError","read_only":1,"in_list_view":1},
+  {"default":"Draft","fieldname":"import_status","fieldtype":"Select","label":"Status","options":"Draft\nAnalyzed\nReady\nDraft Receipt Created\nImported\nError","read_only":1,"in_list_view":1},
   {"fieldname":"file_hash","fieldtype":"Data","label":"File Hash","hidden":1,"read_only":1,"unique":0},
   {"fieldname":"duplicate_of","fieldtype":"Link","label":"Duplicate Of","options":"Supplier Invoice Import","read_only":1},
   {"fieldname":"purchase_receipt","fieldtype":"Link","label":"Purchase Receipt","options":"Purchase Receipt","read_only":1},

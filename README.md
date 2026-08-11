@@ -11,10 +11,11 @@ Supplier Invoice Importer is a Frappe app targeting Frappe `version-16` (16.30.0
 - New-item and conflict markers before any stock transaction is created.
 - SHA-256 duplicate-file protection per supplier.
 - UAH and foreign-currency preview totals.
+- Confirmed creation of missing stock Items and a draft Purchase Receipt.
 
-The analyzer does not submit stock or accounting documents. The next phase will
-create missing Items and draft Purchase Receipt/Purchase Invoice documents only
-after the user confirms the preview.
+The app never submits stock or accounting documents automatically. Missing Items
+and a draft Purchase Receipt are created only after the user confirms the preview.
+Purchase Invoice creation remains planned for the next phase.
 
 ## Planned features
 
