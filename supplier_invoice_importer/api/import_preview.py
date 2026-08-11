@@ -76,10 +76,11 @@ def _get_previous_purchase_rate(
     supplier: str,
     posting_date: str,
     company: str,
-) -> tuple[float, str | None]:
+    warehouse: str,
+) -> tuple[float, str | None, str | None]:
     """Return the latest receipt rate, falling back to a generic buying Item Price."""
     if not item_code:
-        return 0.0, None
+        return 0.0, None, None
 
     values = frappe.db.sql(
         """
@@ -103,7 +104,7 @@ def _get_previous_purchase_rate(
         as_dict=True,
     )
     if values:
-        return flt(values[0].base_rate), values[0].purchase_receipt
+        return flt(values[0].base_rate), values[0].purchase_receipt, "Purchase Receipt"
 
     company_currency = frappe.get_cached_value("Company", company, "default_currency")
     buying_prices = frappe.db.sql(
@@ -128,9 +129,17 @@ def _get_previous_purchase_rate(
         },
         as_dict=True,
     )
-    if not buying_prices:
-        return 0.0, None
-    return flt(buying_prices[0].price_list_rate), None
+    if buying_prices:
+        return flt(buying_prices[0].price_list_rate), None, "Buying Price"
+
+    bin_value = frappe.db.get_value(
+        "Bin",
+        {"item_code": item_code, "warehouse": warehouse},
+        "valuation_rate",
+    )
+    if flt(bin_value) > 0:
+        return flt(bin_value), None, "Valuation Rate"
+    return 0.0, None, None
 
 
 def _purchase_rate_change(current_rate: float, previous_rate: float, match_status: str) -> tuple[float, str]:
@@ -197,11 +206,12 @@ def analyze_import(name: str) -> dict:
             doc.selling_price_list,
         )
         base_rate = flt(source["source_rate"] * rate)
-        previous_purchase_rate, previous_purchase_receipt = _get_previous_purchase_rate(
+        previous_purchase_rate, previous_purchase_receipt, purchase_rate_source = _get_previous_purchase_rate(
             item_code,
             doc.supplier,
             parsed["document_date"] or doc.supplier_invoice_date or nowdate(),
             doc.company,
+            doc.warehouse,
         )
         purchase_rate_change, purchase_rate_status = _purchase_rate_change(
             base_rate,
@@ -217,6 +227,7 @@ def analyze_import(name: str) -> dict:
             "base_amount": source["source_amount"] * rate,
             "previous_purchase_rate": previous_purchase_rate,
             "previous_purchase_receipt": previous_purchase_receipt,
+            "purchase_rate_source": purchase_rate_source,
             "purchase_rate_change": purchase_rate_change,
             "purchase_rate_status": purchase_rate_status,
             "selling_price": selling_price,

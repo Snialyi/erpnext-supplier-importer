@@ -1,6 +1,6 @@
 {
  "actions": [], "creation": "2026-08-11 00:00:00.000000", "doctype": "DocType", "editable_grid": 1, "engine": "InnoDB",
- "field_order": ["row_no","supplier_code","barcode","item_code","item_name","qty","source_uom","uom","source_rate","source_amount","base_rate","base_amount","previous_purchase_rate","previous_purchase_receipt","purchase_rate_change","purchase_rate_status","selling_price","item_price","match_status","create_item","error_message"],
+ "field_order": ["row_no","supplier_code","barcode","item_code","item_name","qty","source_uom","uom","source_rate","source_amount","base_rate","base_amount","previous_purchase_rate","previous_purchase_receipt","purchase_rate_source","purchase_rate_change","purchase_rate_status","selling_price","item_price","match_status","create_item","error_message"],
  "fields": [
   {"fieldname":"row_no","fieldtype":"Int","label":"Excel Row","read_only":1},
   {"fieldname":"supplier_code","fieldtype":"Data","label":"Supplier Code","in_list_view":1,"reqd":1},
@@ -16,6 +16,7 @@
   {"fieldname":"base_amount","fieldtype":"Currency","label":"Amount in Company Currency","read_only":1},
   {"fieldname":"previous_purchase_rate","fieldtype":"Currency","label":"Previous Purchase Rate","read_only":1},
   {"fieldname":"previous_purchase_receipt","fieldtype":"Link","label":"Previous Purchase Receipt","options":"Purchase Receipt","read_only":1},
+  {"fieldname":"purchase_rate_source","fieldtype":"Data","label":"Comparison Source","read_only":1,"in_list_view":1},
   {"fieldname":"purchase_rate_change","fieldtype":"Percent","label":"Purchase Change %","read_only":1,"in_list_view":1},
   {"fieldname":"purchase_rate_status","fieldtype":"Select","label":"Purchase Price Status","options":"Increased\nDecreased\nUnchanged\nNo History\nNew","read_only":1},
   {"fieldname":"selling_price","fieldtype":"Currency","label":"Selling Price","options":"parent.selling_price_currency","in_list_view":1},

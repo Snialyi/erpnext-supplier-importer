@@ -8,7 +8,10 @@ function paint_purchase_rate_changes(frm) {
   const grid = frm.fields_dict.items && frm.fields_dict.items.grid;
   if (!grid) return;
   grid.grid_rows.forEach((grid_row) => {
-    const color = colors[grid_row.doc.purchase_rate_status] || "";
+    let color = colors[grid_row.doc.purchase_rate_status] || "";
+    if (!color && grid_row.doc.purchase_rate_source === "Valuation Rate") {
+      color = "#e7f3ff";
+    }
     grid_row.wrapper
       .find(".data-row, .grid-static-col, .grid-row-check")
       .css("background-color", color);
