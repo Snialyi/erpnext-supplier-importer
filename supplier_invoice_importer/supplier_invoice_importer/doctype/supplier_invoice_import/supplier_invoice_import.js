@@ -23,36 +23,11 @@ function expand_import_form(frm) {
   const sidebar_wrapper = frm.sidebar && frm.sidebar.sidebar
     ? frm.sidebar.sidebar.parent()
     : frm.page.sidebar;
-  if (sidebar_wrapper && sidebar_wrapper.length && sidebar_wrapper.is(":visible")) {
-    sidebar_wrapper.hide();
-    $(document.body).trigger("toggleSidebar");
+  if (sidebar_wrapper && sidebar_wrapper.length) {
+    sidebar_wrapper.show().addClass("sii-form-sidebar-compact");
   }
-  setup_sidebar_arrow(frm, sidebar_wrapper);
+  frm.page.wrapper.find(".sii-sidebar-toggle").remove();
   setup_compact_desk_sidebar();
-}
-
-function setup_sidebar_arrow(frm, sidebar_wrapper) {
-  if (!sidebar_wrapper || !sidebar_wrapper.length) return;
-  let button = frm.page.wrapper.find(".sii-sidebar-toggle");
-  if (!button.length) {
-    button = $('<button type="button" class="sii-sidebar-toggle" aria-label="Показати бічну панель"></button>')
-      .appendTo(frm.page.wrapper)
-      .on("click", () => {
-        frm.toolbar.setup_sidebar_toggle(sidebar_wrapper);
-        setTimeout(() => update_sidebar_arrow(frm, button, sidebar_wrapper), 50);
-      });
-  }
-  update_sidebar_arrow(frm, button, sidebar_wrapper);
-}
-
-function update_sidebar_arrow(frm, button, sidebar_wrapper) {
-  const is_open = sidebar_wrapper.is(":visible");
-  frm.page.wrapper.toggleClass("sii-sidebar-visible", is_open);
-  button
-    .html(frappe.utils.icon(is_open ? "right" : "left", "sm"))
-    .attr("aria-label", is_open ? "Сховати бічну панель" : "Показати бічну панель")
-    .attr("title", is_open ? "Сховати бічну панель" : "Показати бічну панель")
-    .toggleClass("sidebar-open", is_open);
 }
 
 function setup_compact_desk_sidebar() {
