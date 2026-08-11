@@ -49,5 +49,30 @@ frappe.ui.form.on("Supplier Invoice Import", {
         );
       }, __("Actions"));
     }
+    if (!frm.is_new() && frm.doc.purchase_receipt) {
+      frm.add_custom_button(__("Save Selling Prices"), () => {
+        frm.save().then(() => frappe.confirm(
+          __("Create new Item Prices and update existing prices for all rows where Selling Price is greater than zero?"),
+          () => frappe.call({
+            method: "supplier_invoice_importer.api.selling_prices.save_selling_prices",
+            args: { name: frm.doc.name },
+            freeze: true,
+            freeze_message: __("Saving selling prices..."),
+            callback: () => frm.reload_doc(),
+          })
+        ));
+      }, __("Actions"));
+    }
+    if (!frm.is_new() && frm.doc.items && frm.doc.items.length) {
+      frm.add_custom_button(__("Print Imported Item Labels"), () => {
+        const query = new URLSearchParams({
+          doctype: "Supplier Invoice Import",
+          name: frm.doc.name,
+          format: "Imported Item Labels",
+          no_letterhead: "1",
+        });
+        window.open(`/printview?${query.toString()}`, "_blank");
+      }, __("Actions"));
+    }
   },
 });

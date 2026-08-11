@@ -13,6 +13,8 @@ Supplier Invoice Importer is a Frappe app targeting Frappe `version-16` (16.30.0
 - UAH and foreign-currency preview totals.
 - Confirmed creation of missing stock Items and a draft Purchase Receipt.
 - Draft Purchase Invoice mapped from a submitted receipt with a manual due date.
+- Confirmed Item Price creation/update in a selected selling price list.
+- A4 label print format with one CODE128 barcode label per received unit.
 
 The app never submits stock or accounting documents automatically. Missing Items
 and a draft Purchase Receipt are created only after the user confirms the preview.
