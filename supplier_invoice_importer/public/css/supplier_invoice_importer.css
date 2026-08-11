@@ -14,7 +14,6 @@
 }
 
 .sii-column-resizer {
-  display: block;
   position: absolute;
   top: 0;
   right: -5px;
@@ -22,7 +21,6 @@
   width: 10px;
   height: 100%;
   cursor: col-resize;
-  pointer-events: auto;
   user-select: none;
   border-right: 2px solid transparent;
   opacity: 1;
