@@ -116,15 +116,15 @@ def _get_previous_purchase_rate(
            AND IFNULL(batch_no, '') = ''
            AND IFNULL(customer, '') = ''
            AND IFNULL(supplier, '') = ''
-           AND (valid_from IS NULL OR valid_from <= %(posting_date)s)
-           AND (valid_upto IS NULL OR valid_upto >= %(posting_date)s)
+           AND (valid_from IS NULL OR valid_from <= %(today)s)
+           AND (valid_upto IS NULL OR valid_upto >= %(today)s)
          ORDER BY modified DESC
          LIMIT 1
         """,
         {
             "item_code": item_code,
             "currency": company_currency,
-            "posting_date": posting_date,
+            "today": nowdate(),
         },
         as_dict=True,
     )
