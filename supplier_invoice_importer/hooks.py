@@ -7,7 +7,7 @@ app_license = "MIT"
 
 app_include_css = "/assets/supplier_invoice_importer/css/supplier_invoice_importer.css"
 
-jenv = {
+jinja = {
     "methods": [
         "supplier_invoice_importer.barcode.code128_svg",
     ]
