@@ -9,7 +9,9 @@ function paint_purchase_rate_changes(frm) {
   if (!grid) return;
   grid.grid_rows.forEach((grid_row) => {
     const color = colors[grid_row.doc.purchase_rate_status] || "";
-    grid_row.wrapper.find(".data-row").css("background-color", color);
+    grid_row.wrapper
+      .find(".data-row, .grid-static-col, .grid-row-check")
+      .css("background-color", color);
   });
 }
 
@@ -93,6 +95,13 @@ frappe.ui.form.on("Supplier Invoice Import", {
   },
   items_on_form_rendered(frm) {
     paint_purchase_rate_changes(frm);
+  },
+  setup(frm) {
+    $(frm.wrapper).on("grid-row-render.purchase-rate-colors", (event, grid_row) => {
+      if (grid_row.grid.df.fieldname === "items") {
+        paint_purchase_rate_changes(frm);
+      }
+    });
   },
 });
 

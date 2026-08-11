@@ -42,6 +42,18 @@ class PricesAndLabelsTestCase(unittest.TestCase):
         self.assertIn('"purchase_rate_change": purchase_rate_change', source)
         self.assertIn('"purchase_rate_status": purchase_rate_status', source)
 
+    def test_grid_coloring_targets_visible_cells(self):
+        form_script = (
+            ROOT
+            / "supplier_invoice_importer"
+            / "supplier_invoice_importer"
+            / "doctype"
+            / "supplier_invoice_import"
+            / "supplier_invoice_import.js"
+        ).read_text(encoding="utf-8")
+        self.assertIn(".grid-static-col", form_script)
+        self.assertIn("grid-row-render.purchase-rate-colors", form_script)
+
     def test_label_format_is_standard_jinja_with_code128(self):
         print_format = json.loads(PRINT_FORMAT.read_text(encoding="utf-8"))
         self.assertEqual(print_format["doc_type"], "Supplier Invoice Import")
