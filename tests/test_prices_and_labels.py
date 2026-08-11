@@ -56,6 +56,8 @@ class PricesAndLabelsTestCase(unittest.TestCase):
         ).read_text(encoding="utf-8")
         self.assertIn(".grid-static-col", form_script)
         self.assertIn("grid-row-render.purchase-rate-colors", form_script)
+        self.assertIn('Existing: "Існуючий"', form_script)
+        self.assertIn("sidebar_wrapper.hide()", form_script)
 
     def test_label_format_is_standard_jinja_with_code128(self):
         print_format = json.loads(PRINT_FORMAT.read_text(encoding="utf-8"))

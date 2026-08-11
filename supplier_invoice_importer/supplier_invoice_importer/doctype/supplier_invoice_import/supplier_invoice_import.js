@@ -18,8 +18,35 @@ function paint_purchase_rate_changes(frm) {
   });
 }
 
+function expand_import_form(frm) {
+  const sidebar_wrapper = frm.sidebar && frm.sidebar.sidebar
+    ? frm.sidebar.sidebar.parent()
+    : frm.page.sidebar;
+  if (sidebar_wrapper && sidebar_wrapper.length && sidebar_wrapper.is(":visible")) {
+    sidebar_wrapper.hide();
+    $(document.body).trigger("toggleSidebar");
+  }
+}
+
+function localize_item_grid(frm) {
+  const grid = frm.fields_dict.items && frm.fields_dict.items.grid;
+  if (!grid) return;
+  const status_field = grid.get_field("match_status");
+  if (status_field) {
+    const labels = {
+      Existing: "Існуючий",
+      New: "Новий",
+      Conflict: "Конфлікт",
+      Error: "Помилка",
+    };
+    status_field.formatter = (value) => labels[value] || value;
+  }
+}
+
 frappe.ui.form.on("Supplier Invoice Import", {
   refresh(frm) {
+    expand_import_form(frm);
+    localize_item_grid(frm);
     paint_purchase_rate_changes(frm);
     if (!frm.is_new() && frm.doc.source_file) {
       frm.add_custom_button(__("Analyze Excel"), () => {
