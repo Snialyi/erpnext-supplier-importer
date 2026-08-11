@@ -28,6 +28,7 @@ function expand_import_form(frm) {
     $(document.body).trigger("toggleSidebar");
   }
   setup_sidebar_arrow(frm, sidebar_wrapper);
+  setup_sidebar_actions(frm, sidebar_wrapper);
 }
 
 function setup_sidebar_arrow(frm, sidebar_wrapper) {
@@ -51,6 +52,44 @@ function update_sidebar_arrow(button, sidebar_wrapper) {
     .attr("aria-label", is_open ? "Сховати праву панель" : "Показати праву панель")
     .attr("title", is_open ? "Сховати праву панель" : "Показати праву панель")
     .toggleClass("sidebar-open", is_open);
+  frm_sidebar_actions(button).toggleClass("sidebar-open", is_open);
+}
+
+function frm_sidebar_actions(button) {
+  return button.parent().find(".sii-sidebar-actions");
+}
+
+function setup_sidebar_actions(frm, sidebar_wrapper) {
+  let actions = frm.page.wrapper.find(".sii-sidebar-actions");
+  if (!actions.length) {
+    actions = $('<div class="sii-sidebar-actions" aria-label="Швидкі дії правої панелі"></div>')
+      .appendTo(frm.page.wrapper);
+    [
+      ["users", "Призначити", ".add-assignment-label"],
+      ["paperclip", "Додати вкладення", ".add-attachment-btn"],
+      ["tag", "Додати тег", ".form-tags .form-sidebar-label"],
+      ["share-2", "Поділитися", ".share-label"],
+    ].forEach(([icon, title, selector]) => {
+      $('<button type="button" class="sii-sidebar-action"></button>')
+        .html(frappe.utils.icon(icon, "sm"))
+        .attr("aria-label", title)
+        .attr("title", title)
+        .appendTo(actions)
+        .on("click", () => open_sidebar_action(frm, sidebar_wrapper, selector));
+    });
+  }
+  actions.toggleClass("sidebar-open", sidebar_wrapper.is(":visible"));
+}
+
+function open_sidebar_action(frm, sidebar_wrapper, selector) {
+  if (!sidebar_wrapper.is(":visible")) {
+    frm.toolbar.setup_sidebar_toggle(sidebar_wrapper);
+  }
+  const arrow = frm.page.wrapper.find(".sii-sidebar-toggle");
+  setTimeout(() => {
+    update_sidebar_arrow(arrow, sidebar_wrapper);
+    sidebar_wrapper.find(selector).first().trigger("click");
+  }, 80);
 }
 
 function get_saved_grid_widths() {
