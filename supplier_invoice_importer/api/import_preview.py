@@ -71,6 +71,53 @@ def _get_selling_price(item_code: str | None, uom: str, price_list: str | None) 
     return flt(values[0].price_list_rate), values[0].name
 
 
+def _get_previous_purchase_rate(
+    item_code: str | None,
+    supplier: str,
+    posting_date: str,
+) -> tuple[float, str | None]:
+    """Return the latest submitted receipt rate in company currency for this supplier."""
+    if not item_code:
+        return 0.0, None
+
+    values = frappe.db.sql(
+        """
+        SELECT pri.base_rate, pr.name AS purchase_receipt
+          FROM `tabPurchase Receipt Item` pri
+          JOIN `tabPurchase Receipt` pr ON pr.name = pri.parent
+         WHERE pr.docstatus = 1
+           AND pr.supplier = %(supplier)s
+           AND pri.item_code = %(item_code)s
+           AND pr.posting_date <= %(posting_date)s
+         ORDER BY pr.posting_date DESC,
+                  pr.posting_time DESC,
+                  pr.creation DESC
+         LIMIT 1
+        """,
+        {
+            "supplier": supplier,
+            "item_code": item_code,
+            "posting_date": posting_date,
+        },
+        as_dict=True,
+    )
+    if not values:
+        return 0.0, None
+    return flt(values[0].base_rate), values[0].purchase_receipt
+
+
+def _purchase_rate_change(current_rate: float, previous_rate: float, match_status: str) -> tuple[float, str]:
+    if match_status == "New":
+        return 0.0, "New"
+    if previous_rate <= 0:
+        return 0.0, "No History"
+
+    change = ((current_rate - previous_rate) / previous_rate) * 100
+    if abs(change) < 0.01:
+        return 0.0, "Unchanged"
+    return change, "Increased" if change > 0 else "Decreased"
+
+
 @frappe.whitelist()
 def analyze_import(name: str) -> dict:
     doc = frappe.get_doc("Supplier Invoice Import", name)
@@ -122,13 +169,28 @@ def analyze_import(name: str) -> dict:
             uom,
             doc.selling_price_list,
         )
+        base_rate = flt(source["source_rate"] * rate)
+        previous_purchase_rate, previous_purchase_receipt = _get_previous_purchase_rate(
+            item_code,
+            doc.supplier,
+            parsed["document_date"] or doc.supplier_invoice_date or nowdate(),
+        )
+        purchase_rate_change, purchase_rate_status = _purchase_rate_change(
+            base_rate,
+            previous_purchase_rate,
+            match_status,
+        )
         counts[match_status] += 1
         doc.append("items", {
             **source,
             "item_code": item_code,
             "uom": uom,
-            "base_rate": source["source_rate"] * rate,
+            "base_rate": base_rate,
             "base_amount": source["source_amount"] * rate,
+            "previous_purchase_rate": previous_purchase_rate,
+            "previous_purchase_receipt": previous_purchase_receipt,
+            "purchase_rate_change": purchase_rate_change,
+            "purchase_rate_status": purchase_rate_status,
             "selling_price": selling_price,
             "item_price": item_price,
             "match_status": match_status,

@@ -32,6 +32,14 @@ class PricesAndLabelsTestCase(unittest.TestCase):
         self.assertIn('"item_price": item_price', source)
         self.assertIn("valid_upto IS NULL OR valid_upto >=", source)
 
+    def test_analysis_compares_previous_submitted_purchase_rate(self):
+        source = PREVIEW_API.read_text(encoding="utf-8")
+        self.assertIn("_get_previous_purchase_rate", source)
+        self.assertIn("pr.docstatus = 1", source)
+        self.assertIn("pr.supplier = %(supplier)s", source)
+        self.assertIn('"purchase_rate_change": purchase_rate_change', source)
+        self.assertIn('"purchase_rate_status": purchase_rate_status', source)
+
     def test_label_format_is_standard_jinja_with_code128(self):
         print_format = json.loads(PRINT_FORMAT.read_text(encoding="utf-8"))
         self.assertEqual(print_format["doc_type"], "Supplier Invoice Import")

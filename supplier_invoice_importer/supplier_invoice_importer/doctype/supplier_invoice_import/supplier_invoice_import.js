@@ -1,5 +1,21 @@
+function paint_purchase_rate_changes(frm) {
+  const colors = {
+    Increased: "#ffe3e3",
+    Decreased: "#e6f7e9",
+    New: "#fff6d8",
+    "No History": "#fff6d8",
+  };
+  const grid = frm.fields_dict.items && frm.fields_dict.items.grid;
+  if (!grid) return;
+  grid.grid_rows.forEach((grid_row) => {
+    const color = colors[grid_row.doc.purchase_rate_status] || "";
+    grid_row.wrapper.find(".data-row").css("background-color", color);
+  });
+}
+
 frappe.ui.form.on("Supplier Invoice Import", {
   refresh(frm) {
+    paint_purchase_rate_changes(frm);
     if (!frm.is_new() && frm.doc.source_file) {
       frm.add_custom_button(__("Analyze Excel"), () => {
         frappe.call({
@@ -74,5 +90,14 @@ frappe.ui.form.on("Supplier Invoice Import", {
         window.open(`/printview?${query.toString()}`, "_blank");
       }, __("Actions"));
     }
+  },
+  items_on_form_rendered(frm) {
+    paint_purchase_rate_changes(frm);
+  },
+});
+
+frappe.ui.form.on("Supplier Invoice Import Item", {
+  form_render(frm) {
+    paint_purchase_rate_changes(frm);
   },
 });
