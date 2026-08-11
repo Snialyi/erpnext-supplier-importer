@@ -14,7 +14,7 @@
   {"default":"1","fieldname":"conversion_rate","fieldtype":"Float","label":"Exchange Rate","reqd":1},
   {"fieldname":"payment_due_date","fieldtype":"Date","label":"Payment Due Date"},
   {"fieldname":"section_status","fieldtype":"Section Break","label":"Import Status"},
-  {"default":"Draft","fieldname":"import_status","fieldtype":"Select","label":"Status","options":"Draft\nAnalyzed\nReady\nDraft Receipt Created\nImported\nError","read_only":1,"in_list_view":1},
+  {"default":"Draft","fieldname":"import_status","fieldtype":"Select","label":"Status","options":"Draft\nAnalyzed\nReady\nDraft Receipt Created\nDraft Invoice Created\nImported\nError","read_only":1,"in_list_view":1},
   {"fieldname":"file_hash","fieldtype":"Data","label":"File Hash","hidden":1,"read_only":1,"unique":0},
   {"fieldname":"duplicate_of","fieldtype":"Link","label":"Duplicate Of","options":"Supplier Invoice Import","read_only":1},
   {"fieldname":"purchase_receipt","fieldtype":"Link","label":"Purchase Receipt","options":"Purchase Receipt","read_only":1},

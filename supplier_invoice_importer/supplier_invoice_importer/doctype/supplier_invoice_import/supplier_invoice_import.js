@@ -30,5 +30,24 @@ frappe.ui.form.on("Supplier Invoice Import", {
         );
       }, __("Actions"));
     }
+    if (!frm.is_new() && frm.doc.purchase_receipt && !frm.doc.purchase_invoice) {
+      frm.add_custom_button(__("Create Draft Purchase Invoice"), () => {
+        frappe.confirm(
+          __("Create a draft Purchase Invoice with the entered payment due date? The Purchase Receipt must already be submitted."),
+          () => frappe.call({
+            method: "supplier_invoice_importer.api.create_invoice.create_draft_purchase_invoice",
+            args: { name: frm.doc.name },
+            freeze: true,
+            freeze_message: __("Creating draft Purchase Invoice..."),
+            callback: (response) => {
+              frm.reload_doc();
+              if (response.message && response.message.purchase_invoice) {
+                frappe.set_route("Form", "Purchase Invoice", response.message.purchase_invoice);
+              }
+            },
+          })
+        );
+      }, __("Actions"));
+    }
   },
 });

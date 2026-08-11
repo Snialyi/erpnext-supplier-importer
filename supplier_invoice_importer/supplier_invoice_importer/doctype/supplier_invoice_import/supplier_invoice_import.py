@@ -1,6 +1,6 @@
 import frappe
 from frappe.model.document import Document
-from frappe.utils import flt
+from frappe.utils import flt, getdate
 
 
 class SupplierInvoiceImport(Document):
@@ -9,6 +9,12 @@ class SupplierInvoiceImport(Document):
             frappe.throw("Для валютної накладної вкажіть курс більше нуля.")
         if self.currency == "UAH":
             self.conversion_rate = 1
+        if (
+            self.payment_due_date
+            and self.supplier_invoice_date
+            and getdate(self.payment_due_date) < getdate(self.supplier_invoice_date)
+        ):
+            frappe.throw("Термін оплати не може бути раніше дати накладної.")
 
         self.total_lines = len(self.items)
         self.total_qty = sum(flt(row.qty) for row in self.items)
