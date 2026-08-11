@@ -1,20 +1,20 @@
 function paint_purchase_rate_changes(frm) {
-  const colors = {
-    Increased: "#ffe3e3",
-    Decreased: "#e6f7e9",
-    New: "#fff6d8",
-    "No History": "#fff6d8",
+  const classes = {
+    Increased: "sii-rate-increased",
+    Decreased: "sii-rate-decreased",
+    New: "sii-rate-new",
+    "No History": "sii-rate-new",
   };
   const grid = frm.fields_dict.items && frm.fields_dict.items.grid;
   if (!grid) return;
   grid.grid_rows.forEach((grid_row) => {
-    let color = colors[grid_row.doc.purchase_rate_status] || "";
-    if (!color && grid_row.doc.purchase_rate_source === "Valuation Rate") {
-      color = "#e7f3ff";
+    let row_class = classes[grid_row.doc.purchase_rate_status] || "";
+    if (!row_class && grid_row.doc.purchase_rate_source === "Valuation Rate") {
+      row_class = "sii-rate-valuation";
     }
-    grid_row.wrapper
-      .find(".data-row, .grid-static-col, .grid-row-check")
-      .css("background-color", color);
+    const cells = grid_row.wrapper.find(".data-row, .grid-static-col, .grid-row-check, .row-check");
+    cells.removeClass("sii-rate-increased sii-rate-decreased sii-rate-new sii-rate-valuation");
+    if (row_class) cells.addClass(row_class);
   });
 }
 
@@ -34,12 +34,19 @@ function expand_import_form(frm) {
 
 function setup_form_sidebar_hover(sidebar_wrapper) {
   const sidebar = sidebar_wrapper.children(".form-sidebar");
+  sidebar_wrapper.removeClass("sii-form-sidebar-open");
   sidebar
     .off("mouseenter.sii-sidebar mouseleave.sii-sidebar")
     .on("mouseenter.sii-sidebar", () => sidebar_wrapper.addClass("sii-form-sidebar-open"))
     .on("mouseleave.sii-sidebar", () => sidebar_wrapper.removeClass("sii-form-sidebar-open"));
   $(document)
-    .off("click.sii-sidebar-collapse")
+    .off("click.sii-sidebar-collapse mousemove.sii-sidebar-state")
+    .on("mousemove.sii-sidebar-state", (event) => {
+      sidebar_wrapper.toggleClass(
+        "sii-form-sidebar-open",
+        Boolean($(event.target).closest(sidebar).length)
+      );
+    })
     .on("click.sii-sidebar-collapse", (event) => {
       if (!$(event.target).closest(sidebar_wrapper).length) {
         sidebar_wrapper.removeClass("sii-form-sidebar-open");
@@ -75,12 +82,12 @@ function get_saved_grid_widths() {
   }
 }
 
-function apply_grid_column_width(grid, column_index, width) {
-  grid.wrapper.find(`.grid-row > .grid-static-col:nth-child(${column_index + 1})`).css({
-    width: `${width}px`,
-    minWidth: `${width}px`,
-    maxWidth: `${width}px`,
-    flex: `0 0 ${width}px`,
+function apply_grid_column_width(grid, fieldname, width) {
+  grid.wrapper.find(`.grid-static-col[data-fieldname="${fieldname}"]`).each((index, element) => {
+    element.style.setProperty("width", `${width}px`, "important");
+    element.style.setProperty("min-width", `${width}px`, "important");
+    element.style.setProperty("max-width", `${width}px`, "important");
+    element.style.setProperty("flex", `0 0 ${width}px`, "important");
   });
 }
 
@@ -88,16 +95,16 @@ function setup_resizable_item_columns(frm) {
   const grid = frm.fields_dict.items && frm.fields_dict.items.grid;
   if (!grid) return;
   const widths = get_saved_grid_widths();
-  Object.entries(widths).forEach(([column_index, width]) => {
-    apply_grid_column_width(grid, Number(column_index), width);
+  Object.entries(widths).forEach(([fieldname, width]) => {
+    apply_grid_column_width(grid, fieldname, width);
   });
 
   grid.wrapper
-    .find(".grid-heading-row .grid-row > .grid-static-col")
+    .find(".grid-heading-row .grid-row:not(.filter-row) > .grid-static-col[data-fieldname]")
     .each((index, element) => {
       const column = $(element);
       if (column.find(".sii-column-resizer").length) return;
-      if (index === 0 || column.hasClass("row-index")) return;
+      const fieldname = column.attr("data-fieldname");
       $('<span class="sii-column-resizer" title="Потягніть, щоб змінити ширину"></span>')
         .appendTo(column)
         .on("pointerdown", (event) => {
@@ -110,11 +117,11 @@ function setup_resizable_item_columns(frm) {
             .off("pointermove.sii-column-resize pointerup.sii-column-resize")
             .on("pointermove.sii-column-resize", (move_event) => {
               const width = Math.max(70, Math.min(600, start_width + move_event.pageX - start_x));
-              apply_grid_column_width(grid, index, width);
+              apply_grid_column_width(grid, fieldname, width);
             })
             .on("pointerup.sii-column-resize", () => {
               const saved_widths = get_saved_grid_widths();
-              saved_widths[index] = Math.round(column.outerWidth());
+              saved_widths[fieldname] = Math.round(column.outerWidth());
               localStorage.setItem("sii-item-column-widths", JSON.stringify(saved_widths));
               $(document.body).removeClass("sii-resizing-column");
               $(document).off("pointermove.sii-column-resize pointerup.sii-column-resize");
@@ -136,12 +143,12 @@ function schedule_item_grid_enhancements(frm) {
 function show_all_items(frm) {
   const grid = frm.fields_dict.items && frm.fields_dict.items.grid;
   if (!grid || !grid.grid_pagination) return;
-  const page_length = Math.max(grid.data.length, 50);
+  const page_length = Math.max((frm.doc.items || []).length, 100);
   if (grid.grid_pagination.page_length !== page_length) {
     grid.grid_pagination.page_length = page_length;
     grid.grid_pagination.page_index = 1;
     grid.grid_pagination.total_pages = 1;
-    grid.grid_pagination.go_to_page(1, true);
+    grid.refresh();
   }
   grid.wrapper.find(".grid-pagination").hide();
 }

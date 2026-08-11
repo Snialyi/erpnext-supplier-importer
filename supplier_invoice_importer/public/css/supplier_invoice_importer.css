@@ -83,6 +83,22 @@
   opacity: 1;
 }
 
+.sii-expanded-form [data-fieldname="items"] .sii-rate-increased {
+  background-color: #ffe3e3 !important;
+}
+
+.sii-expanded-form [data-fieldname="items"] .sii-rate-decreased {
+  background-color: #e6f7e9 !important;
+}
+
+.sii-expanded-form [data-fieldname="items"] .sii-rate-new {
+  background-color: #fff6d8 !important;
+}
+
+.sii-expanded-form [data-fieldname="items"] .sii-rate-valuation {
+  background-color: #e7f3ff !important;
+}
+
 .sii-expanded-form .layout-side-section.sii-form-sidebar-compact {
   display: block !important;
   min-width: 52px !important;
