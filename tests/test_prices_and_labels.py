@@ -74,6 +74,9 @@ class PricesAndLabelsTestCase(unittest.TestCase):
         self.assertEqual(print_format["doc_type"], "Supplier Invoice Import")
         self.assertEqual(print_format["print_format_type"], "Jinja")
         self.assertEqual(print_format["standard"], "Yes")
+        self.assertIn("@page { size: 40mm 25mm; margin: 0; }", print_format["html"])
+        self.assertIn('class="price-rotated"', print_format["html"])
+        self.assertIn("{{ doc.company }}", print_format["html"])
         self.assertIn('jsbarcode-format="CODE128"', print_format["html"])
         self.assertIn("range(row.qty|int)", print_format["html"])
 
