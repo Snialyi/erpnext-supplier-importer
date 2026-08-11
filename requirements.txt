@@ -1,2 +1,2 @@
 # Runtime dependencies are provided by Frappe and ERPNext.
-
+openpyxl>=3.1.0,<4.0.0
