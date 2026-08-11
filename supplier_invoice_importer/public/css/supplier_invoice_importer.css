@@ -25,12 +25,16 @@
   display: none !important;
 }
 
-.sii-expanded-form [data-fieldname="items"] .form-grid {
-  overflow-x: auto;
+.sii-expanded-form [data-fieldname="items"] .form-grid-container,
+.sii-expanded-form [data-fieldname="items"] .form-grid,
+.sii-expanded-form [data-fieldname="items"] .column-limit-reached {
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
 }
 
 .sii-expanded-form [data-fieldname="items"] .grid-row {
-  min-width: max-content;
+  min-width: 100%;
 }
 
 .sii-expanded-form [data-fieldname="items"] .grid-heading-row .grid-static-col {
