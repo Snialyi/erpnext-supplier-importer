@@ -10,8 +10,15 @@
 }
 
 .sii-expanded-form [data-fieldname="items"] .grid-body {
-  max-height: none;
-  overflow-y: visible;
+  height: auto !important;
+  max-height: none !important;
+  overflow-y: visible !important;
+}
+
+.sii-expanded-form [data-fieldname="items"] .rows {
+  height: auto !important;
+  max-height: none !important;
+  overflow-y: visible !important;
 }
 
 .sii-expanded-form [data-fieldname="items"] .grid-pagination {
@@ -39,6 +46,8 @@
   height: 100%;
   cursor: col-resize;
   user-select: none;
+  border-right: 1px dashed var(--gray-500);
+  opacity: 0.45;
 }
 
 .sii-resizing-column,
@@ -71,6 +80,7 @@
 .sii-column-resizer:hover,
 .sii-column-resizer:active {
   border-right: 2px solid var(--primary);
+  opacity: 1;
 }
 
 .sii-expanded-form .layout-side-section.sii-form-sidebar-compact {
@@ -93,41 +103,41 @@
   transition: width 180ms ease, box-shadow 180ms ease;
 }
 
-.sii-expanded-form .sii-form-sidebar-compact > .form-sidebar:hover {
+.sii-expanded-form .sii-form-sidebar-compact.sii-form-sidebar-open > .form-sidebar {
   width: var(--form-sidebar-width) !important;
   overflow-y: auto;
   box-shadow: var(--shadow-lg);
 }
 
-.sii-expanded-form .sii-form-sidebar-compact > .form-sidebar:not(:hover) .sidebar-meta-details,
-.sii-expanded-form .sii-form-sidebar-compact > .form-sidebar:not(:hover) .sidebar-rating,
-.sii-expanded-form .sii-form-sidebar-compact > .form-sidebar:not(:hover) .user-actions,
-.sii-expanded-form .sii-form-sidebar-compact > .form-sidebar:not(:hover) .sidebar-menu,
-.sii-expanded-form .sii-form-sidebar-compact > .form-sidebar:not(:hover) .assignments,
-.sii-expanded-form .sii-form-sidebar-compact > .form-sidebar:not(:hover) .attachments,
-.sii-expanded-form .sii-form-sidebar-compact > .form-sidebar:not(:hover) .form-tag-row,
-.sii-expanded-form .sii-form-sidebar-compact > .form-sidebar:not(:hover) .shares {
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .sidebar-meta-details,
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .sidebar-rating,
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .user-actions,
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .sidebar-menu,
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .assignments,
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .attachments,
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .form-tag-row,
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .shares {
   display: none !important;
 }
 
-.sii-expanded-form .sii-form-sidebar-compact > .form-sidebar:not(:hover) .sidebar-section {
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .sidebar-section {
   padding-left: 15px;
   padding-right: 15px;
 }
 
-.sii-expanded-form .sii-form-sidebar-compact > .form-sidebar:not(:hover) .form-sidebar-label {
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .form-sidebar-label {
   width: 22px;
   min-width: 22px;
   overflow: hidden;
   white-space: nowrap;
 }
 
-.sii-expanded-form .sii-form-sidebar-compact > .form-sidebar:not(:hover) .form-sidebar-items {
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .form-sidebar-items {
   flex-wrap: nowrap;
   width: 22px;
 }
 
-.sii-expanded-form .sii-form-sidebar-compact > .form-sidebar:not(:hover) .form-sidebar-items > .icon-btn {
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .form-sidebar-items > .icon-btn {
   display: none;
 }
 

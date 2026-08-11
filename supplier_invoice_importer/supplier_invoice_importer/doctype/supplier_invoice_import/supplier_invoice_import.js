@@ -26,9 +26,25 @@ function expand_import_form(frm) {
   if (sidebar_wrapper && sidebar_wrapper.length) {
     sidebar_wrapper.show().addClass("sii-form-sidebar-compact");
     keep_form_sidebar_available(sidebar_wrapper);
+    setup_form_sidebar_hover(sidebar_wrapper);
   }
   frm.page.wrapper.find(".sii-sidebar-toggle").remove();
   setup_compact_desk_sidebar();
+}
+
+function setup_form_sidebar_hover(sidebar_wrapper) {
+  const sidebar = sidebar_wrapper.children(".form-sidebar");
+  sidebar
+    .off("mouseenter.sii-sidebar mouseleave.sii-sidebar")
+    .on("mouseenter.sii-sidebar", () => sidebar_wrapper.addClass("sii-form-sidebar-open"))
+    .on("mouseleave.sii-sidebar", () => sidebar_wrapper.removeClass("sii-form-sidebar-open"));
+  $(document)
+    .off("click.sii-sidebar-collapse")
+    .on("click.sii-sidebar-collapse", (event) => {
+      if (!$(event.target).closest(sidebar_wrapper).length) {
+        sidebar_wrapper.removeClass("sii-form-sidebar-open");
+      }
+    });
 }
 
 function keep_form_sidebar_available(sidebar_wrapper) {
@@ -107,6 +123,16 @@ function setup_resizable_item_columns(frm) {
     });
 }
 
+function schedule_item_grid_enhancements(frm) {
+  [0, 250, 800].forEach((delay) => {
+    setTimeout(() => {
+      setup_resizable_item_columns(frm);
+      apply_item_filter(frm);
+      paint_purchase_rate_changes(frm);
+    }, delay);
+  });
+}
+
 function show_all_items(frm) {
   const grid = frm.fields_dict.items && frm.fields_dict.items.grid;
   if (!grid || !grid.grid_pagination) return;
@@ -178,8 +204,7 @@ frappe.ui.form.on("Supplier Invoice Import", {
     localize_item_grid(frm);
     show_all_items(frm);
     setup_item_filter(frm);
-    setup_resizable_item_columns(frm);
-    paint_purchase_rate_changes(frm);
+    schedule_item_grid_enhancements(frm);
     if (!frm.is_new() && frm.doc.source_file) {
       frm.add_custom_button(__("Analyze Excel"), () => {
         frappe.call({
@@ -258,16 +283,14 @@ frappe.ui.form.on("Supplier Invoice Import", {
   items_on_form_rendered(frm) {
     show_all_items(frm);
     setup_item_filter(frm);
-    setup_resizable_item_columns(frm);
-    paint_purchase_rate_changes(frm);
+    schedule_item_grid_enhancements(frm);
   },
   setup(frm) {
     $(frm.wrapper).on("grid-row-render.purchase-rate-colors", (event, grid_row) => {
       if (grid_row.grid.df.fieldname === "items") {
         show_all_items(frm);
         setup_item_filter(frm);
-        setup_resizable_item_columns(frm);
-        paint_purchase_rate_changes(frm);
+        schedule_item_grid_enhancements(frm);
       }
     });
   },
