@@ -403,7 +403,7 @@ frappe.ui.form.on("Supplier Invoice Import", {
     }
     if (!frm.is_new() && frm.doc.purchase_receipt) {
       frm.add_custom_button(__("Save Selling Prices"), () => {
-        frm.save().then(() => frappe.confirm(
+        const save_selling_prices = () => frappe.confirm(
           __("Create new Item Prices and update existing prices for all rows where Selling Price is greater than zero?"),
           () => frappe.call({
             method: "supplier_invoice_importer.api.selling_prices.save_selling_prices",
@@ -412,7 +412,13 @@ frappe.ui.form.on("Supplier Invoice Import", {
             freeze_message: __("Saving selling prices..."),
             callback: () => frm.reload_doc(),
           })
-        ));
+        );
+
+        if (frm.is_dirty()) {
+          frm.save().then(save_selling_prices);
+        } else {
+          save_selling_prices();
+        }
       }, __("Actions"));
     }
     if (!frm.is_new() && frm.doc.items && frm.doc.items.length) {
