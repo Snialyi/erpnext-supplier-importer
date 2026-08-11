@@ -19,6 +19,7 @@ function paint_purchase_rate_changes(frm) {
 }
 
 function expand_import_form(frm) {
+  frm.page.wrapper.addClass("sii-expanded-form");
   const sidebar_wrapper = frm.sidebar && frm.sidebar.sidebar
     ? frm.sidebar.sidebar.parent()
     : frm.page.sidebar;
@@ -26,6 +27,43 @@ function expand_import_form(frm) {
     sidebar_wrapper.hide();
     $(document.body).trigger("toggleSidebar");
   }
+  setup_sidebar_arrow(frm, sidebar_wrapper);
+}
+
+function setup_sidebar_arrow(frm, sidebar_wrapper) {
+  if (!sidebar_wrapper || !sidebar_wrapper.length) return;
+  let button = frm.page.wrapper.find(".sii-sidebar-toggle");
+  if (!button.length) {
+    button = $('<button type="button" class="sii-sidebar-toggle" aria-label="Показати бічну панель"></button>')
+      .appendTo(frm.page.wrapper)
+      .on("click", () => {
+        frm.toolbar.setup_sidebar_toggle(sidebar_wrapper);
+        setTimeout(() => update_sidebar_arrow(button, sidebar_wrapper), 50);
+      });
+  }
+  update_sidebar_arrow(button, sidebar_wrapper);
+}
+
+function update_sidebar_arrow(button, sidebar_wrapper) {
+  const is_open = sidebar_wrapper.is(":visible");
+  button
+    .html(frappe.utils.icon(is_open ? "right" : "left", "sm"))
+    .attr("aria-label", is_open ? "Сховати бічну панель" : "Показати бічну панель")
+    .attr("title", is_open ? "Сховати бічну панель" : "Показати бічну панель")
+    .toggleClass("sidebar-open", is_open);
+}
+
+function show_all_items_in_scroll(frm) {
+  const grid = frm.fields_dict.items && frm.fields_dict.items.grid;
+  if (!grid || !grid.grid_pagination) return;
+  const page_length = Math.max(grid.data.length, 50);
+  if (grid.grid_pagination.page_length !== page_length) {
+    grid.grid_pagination.page_length = page_length;
+    grid.grid_pagination.page_index = 1;
+    grid.grid_pagination.total_pages = 1;
+    grid.grid_pagination.go_to_page(1, true);
+  }
+  grid.wrapper.find(".grid-pagination").hide();
 }
 
 function localize_item_grid(frm) {
@@ -47,6 +85,7 @@ frappe.ui.form.on("Supplier Invoice Import", {
   refresh(frm) {
     expand_import_form(frm);
     localize_item_grid(frm);
+    show_all_items_in_scroll(frm);
     paint_purchase_rate_changes(frm);
     if (!frm.is_new() && frm.doc.source_file) {
       frm.add_custom_button(__("Analyze Excel"), () => {
@@ -124,11 +163,13 @@ frappe.ui.form.on("Supplier Invoice Import", {
     }
   },
   items_on_form_rendered(frm) {
+    show_all_items_in_scroll(frm);
     paint_purchase_rate_changes(frm);
   },
   setup(frm) {
     $(frm.wrapper).on("grid-row-render.purchase-rate-colors", (event, grid_row) => {
       if (grid_row.grid.df.fieldname === "items") {
+        show_all_items_in_scroll(frm);
         paint_purchase_rate_changes(frm);
       }
     });

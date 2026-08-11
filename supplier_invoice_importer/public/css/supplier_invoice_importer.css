@@ -1,0 +1,54 @@
+.sii-expanded-form .std-form-layout .section-body,
+.sii-expanded-form .std-form-layout .section-head,
+.sii-expanded-form .form-section-description {
+  max-width: none !important;
+}
+
+.sii-expanded-form .layout-main-section-wrapper {
+  width: 100% !important;
+  flex: 1 1 100% !important;
+}
+
+.sii-expanded-form [data-fieldname="items"] .grid-body {
+  max-height: 68vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.sii-expanded-form [data-fieldname="items"] .grid-pagination {
+  display: none !important;
+}
+
+.sii-sidebar-toggle {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  z-index: 1040;
+  width: 30px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid var(--border-color);
+  border-right: 0;
+  border-radius: 10px 0 0 10px;
+  background: var(--fg-color);
+  color: var(--text-color);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+}
+
+.sii-sidebar-toggle:hover {
+  background: var(--control-bg);
+}
+
+.sii-sidebar-toggle.sidebar-open {
+  right: var(--form-sidebar-width);
+}
+
+@media (max-width: 991px) {
+  .sii-sidebar-toggle.sidebar-open {
+    right: 0;
+  }
+}

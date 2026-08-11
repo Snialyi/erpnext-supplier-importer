@@ -58,6 +58,11 @@ class PricesAndLabelsTestCase(unittest.TestCase):
         self.assertIn("grid-row-render.purchase-rate-colors", form_script)
         self.assertIn('Existing: "Існуючий"', form_script)
         self.assertIn("sidebar_wrapper.hide()", form_script)
+        self.assertIn("sii-sidebar-toggle", form_script)
+        self.assertIn("grid.grid_pagination.page_length", form_script)
+
+        hooks = (ROOT / "supplier_invoice_importer" / "hooks.py").read_text(encoding="utf-8")
+        self.assertIn("supplier_invoice_importer.css", hooks)
 
     def test_label_format_is_standard_jinja_with_code128(self):
         print_format = json.loads(PRINT_FORMAT.read_text(encoding="utf-8"))
