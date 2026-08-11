@@ -47,12 +47,37 @@ function setup_sidebar_arrow(frm, sidebar_wrapper) {
 
 function update_sidebar_arrow(frm, button, sidebar_wrapper) {
   const is_open = sidebar_wrapper.is(":visible");
+  const sidebar_width = 360;
   frm.page.wrapper.toggleClass("sii-right-sidebar-open", is_open);
+  const main_wrapper = frm.page.wrapper.find(".layout-main-section-wrapper");
+  if (is_open) {
+    sidebar_wrapper.css({
+      width: `${sidebar_width}px`,
+      minWidth: `${sidebar_width}px`,
+      maxWidth: `${sidebar_width}px`,
+      flex: `0 0 ${sidebar_width}px`,
+      overflow: "visible",
+    });
+    main_wrapper.css({
+      width: `calc(100% - ${sidebar_width}px)`,
+      flex: `0 0 calc(100% - ${sidebar_width}px)`,
+    });
+  } else {
+    sidebar_wrapper.css({
+      width: "",
+      minWidth: "",
+      maxWidth: "",
+      flex: "",
+      overflow: "",
+    });
+    main_wrapper.css({ width: "100%", flex: "1 1 100%" });
+  }
   button
     .html(frappe.utils.icon(is_open ? "right" : "left", "sm"))
     .attr("aria-label", is_open ? "Сховати праву панель" : "Показати праву панель")
     .attr("title", is_open ? "Сховати праву панель" : "Показати праву панель")
-    .toggleClass("sidebar-open", is_open);
+    .toggleClass("sidebar-open", is_open)
+    .css("right", is_open ? `${sidebar_width}px` : "48px");
   const actions = $(document.body).find(".sii-sidebar-actions");
   actions.toggleClass("sidebar-open", is_open);
   actions.toggle(!is_open);
@@ -65,7 +90,7 @@ function setup_sidebar_actions(frm, sidebar_wrapper) {
       .appendTo(document.body)
       .css({
         position: "fixed",
-        top: "calc(50% - 92px)",
+        top: "220px",
         right: "6px",
         zIndex: 1039,
         width: "44px",
