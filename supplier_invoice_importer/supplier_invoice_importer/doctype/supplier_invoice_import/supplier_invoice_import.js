@@ -35,23 +35,8 @@ function expand_import_form(frm) {
 function setup_form_sidebar_hover(sidebar_wrapper) {
   const sidebar = sidebar_wrapper.children(".form-sidebar");
   sidebar_wrapper.removeClass("sii-form-sidebar-open");
-  sidebar
-    .off("mouseenter.sii-sidebar mouseleave.sii-sidebar")
-    .on("mouseenter.sii-sidebar", () => sidebar_wrapper.addClass("sii-form-sidebar-open"))
-    .on("mouseleave.sii-sidebar", () => sidebar_wrapper.removeClass("sii-form-sidebar-open"));
-  $(document)
-    .off("click.sii-sidebar-collapse mousemove.sii-sidebar-state")
-    .on("mousemove.sii-sidebar-state", (event) => {
-      sidebar_wrapper.toggleClass(
-        "sii-form-sidebar-open",
-        Boolean($(event.target).closest(sidebar).length)
-      );
-    })
-    .on("click.sii-sidebar-collapse", (event) => {
-      if (!$(event.target).closest(sidebar_wrapper).length) {
-        sidebar_wrapper.removeClass("sii-form-sidebar-open");
-      }
-    });
+  sidebar.off("mouseenter.sii-sidebar mouseleave.sii-sidebar");
+  $(document).off("click.sii-sidebar-collapse mousemove.sii-sidebar-state");
 }
 
 function keep_form_sidebar_available(sidebar_wrapper) {

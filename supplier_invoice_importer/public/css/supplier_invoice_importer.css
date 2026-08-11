@@ -95,41 +95,42 @@
   transition: width 180ms ease, box-shadow 180ms ease;
 }
 
-.sii-expanded-form .sii-form-sidebar-compact.sii-form-sidebar-open > .form-sidebar {
-  width: var(--form-sidebar-width) !important;
+.sii-expanded-form .sii-form-sidebar-compact:hover > .form-sidebar {
+  width: var(--form-sidebar-width, 320px) !important;
   overflow-y: auto;
   box-shadow: var(--shadow-lg);
 }
 
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .sidebar-meta-details,
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .sidebar-rating,
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .user-actions,
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .sidebar-menu,
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .assignments,
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .attachments,
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .form-tag-row,
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .shares {
+.sii-expanded-form .sii-form-sidebar-compact:not(:hover) > .form-sidebar .sidebar-meta-details,
+.sii-expanded-form .sii-form-sidebar-compact:not(:hover) > .form-sidebar .sidebar-rating,
+.sii-expanded-form .sii-form-sidebar-compact:not(:hover) > .form-sidebar .user-actions,
+.sii-expanded-form .sii-form-sidebar-compact:not(:hover) > .form-sidebar .sidebar-menu,
+.sii-expanded-form .sii-form-sidebar-compact:not(:hover) > .form-sidebar .assignments,
+.sii-expanded-form .sii-form-sidebar-compact:not(:hover) > .form-sidebar .attachments-actions + *,
+.sii-expanded-form .sii-form-sidebar-compact:not(:hover) > .form-sidebar .form-tag-row,
+.sii-expanded-form .sii-form-sidebar-compact:not(:hover) > .form-sidebar .shares,
+.sii-expanded-form .sii-form-sidebar-compact:not(:hover) > .form-sidebar .followed-by-section {
   display: none !important;
 }
 
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .sidebar-section {
+.sii-expanded-form .sii-form-sidebar-compact:not(:hover) > .form-sidebar .sidebar-section {
   padding-left: 15px;
   padding-right: 15px;
 }
 
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .form-sidebar-label {
+.sii-expanded-form .sii-form-sidebar-compact:not(:hover) > .form-sidebar .form-sidebar-label {
   width: 22px;
   min-width: 22px;
   overflow: hidden;
   white-space: nowrap;
 }
 
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .form-sidebar-items {
+.sii-expanded-form .sii-form-sidebar-compact:not(:hover) > .form-sidebar .form-sidebar-items {
   flex-wrap: nowrap;
   width: 22px;
 }
 
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .form-sidebar-items > .icon-btn {
+.sii-expanded-form .sii-form-sidebar-compact:not(:hover) > .form-sidebar .form-sidebar-items > .icon-btn {
   display: none;
 }
 
@@ -143,18 +144,5 @@
   .body-sidebar-container.sii-auto-compact:not(.expanded) .body-sidebar:hover .nav-item {
     padding-left: 8px;
     padding-right: 8px;
-  }
-}
-
-@media (max-width: 991px) {
-  .sii-expanded-form .layout-main-section-wrapper {
-    width: 100% !important;
-    flex: 1 1 100% !important;
-  }
-
-  .sii-expanded-form .layout-side-section.sii-form-sidebar-compact {
-    min-width: 0 !important;
-    width: 0 !important;
-    flex-basis: 0 !important;
   }
 }
