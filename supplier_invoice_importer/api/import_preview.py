@@ -5,7 +5,7 @@ from decimal import Decimal
 
 import frappe
 from frappe import _
-from frappe.utils import flt
+from frappe.utils import flt, nowdate
 
 from supplier_invoice_importer.parsers.mobitime import InvoiceFormatError, parse_mobitime
 
@@ -33,6 +33,42 @@ def _find_item(code: str, barcode: str | None) -> tuple[str | None, str]:
         return None, "Conflict"
     item_code = by_code or by_barcode
     return (item_code, "Existing") if item_code else (None, "New")
+
+
+def _get_selling_price(item_code: str | None, uom: str, price_list: str | None) -> tuple[float, str | None]:
+    """Return the current generic selling price, preferring the row UOM."""
+    if not item_code or not price_list:
+        return 0.0, None
+
+    values = frappe.db.sql(
+        """
+        SELECT name, price_list_rate
+          FROM `tabItem Price`
+         WHERE price_list = %(price_list)s
+           AND item_code = %(item_code)s
+           AND selling = 1
+           AND IFNULL(batch_no, '') = ''
+           AND IFNULL(customer, '') = ''
+           AND IFNULL(supplier, '') = ''
+           AND (IFNULL(uom, '') = '' OR uom = %(uom)s)
+           AND (valid_from IS NULL OR valid_from <= %(today)s)
+           AND (valid_upto IS NULL OR valid_upto >= %(today)s)
+         ORDER BY CASE WHEN uom = %(uom)s THEN 0 ELSE 1 END,
+                  valid_from DESC,
+                  modified DESC
+         LIMIT 1
+        """,
+        {
+            "price_list": price_list,
+            "item_code": item_code,
+            "uom": uom,
+            "today": nowdate(),
+        },
+        as_dict=True,
+    )
+    if not values:
+        return 0.0, None
+    return flt(values[0].price_list_rate), values[0].name
 
 
 @frappe.whitelist()
@@ -80,13 +116,21 @@ def analyze_import(name: str) -> dict:
     counts = {"Existing": 0, "New": 0, "Conflict": 0}
     for source in parsed["items"]:
         item_code, match_status = _find_item(source["supplier_code"], source["barcode"])
+        uom = "Nos" if source["source_uom"].casefold() in {"шт", "шт.", "pcs"} else source["source_uom"]
+        selling_price, item_price = _get_selling_price(
+            item_code,
+            uom,
+            doc.selling_price_list,
+        )
         counts[match_status] += 1
         doc.append("items", {
             **source,
             "item_code": item_code,
-            "uom": "Nos" if source["source_uom"].casefold() in {"шт", "шт.", "pcs"} else source["source_uom"],
+            "uom": uom,
             "base_rate": source["source_rate"] * rate,
             "base_amount": source["source_amount"] * rate,
+            "selling_price": selling_price,
+            "item_price": item_price,
             "match_status": match_status,
             "create_item": match_status == "New",
             "error_message": _("Code and barcode point to different items.") if match_status == "Conflict" else None,
