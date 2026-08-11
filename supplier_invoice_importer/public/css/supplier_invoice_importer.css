@@ -84,7 +84,7 @@
   z-index: 1030;
 }
 
-.sii-expanded-form .sii-form-sidebar-compact > .form-sidebar {
+.sii-expanded-form .sii-form-sidebar-panel {
   position: absolute;
   right: 0;
   width: 52px !important;
@@ -95,42 +95,42 @@
   transition: width 180ms ease, box-shadow 180ms ease;
 }
 
-.sii-expanded-form .sii-form-sidebar-compact.sii-form-sidebar-open > .form-sidebar {
+.sii-expanded-form .sii-form-sidebar-compact.sii-form-sidebar-open .sii-form-sidebar-panel {
   width: var(--form-sidebar-width, 320px) !important;
   overflow-y: auto;
   box-shadow: var(--shadow-lg);
 }
 
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .sidebar-meta-details,
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .sidebar-rating,
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .user-actions,
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .sidebar-menu,
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .assignments,
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .attachments-actions + *,
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .form-tag-row,
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .shares,
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .followed-by-section {
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) .sii-form-sidebar-panel .sidebar-meta-details,
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) .sii-form-sidebar-panel .sidebar-rating,
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) .sii-form-sidebar-panel .user-actions,
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) .sii-form-sidebar-panel .sidebar-menu,
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) .sii-form-sidebar-panel .assignments,
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) .sii-form-sidebar-panel .attachments-actions + *,
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) .sii-form-sidebar-panel .form-tag-row,
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) .sii-form-sidebar-panel .shares,
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) .sii-form-sidebar-panel .followed-by-section {
   display: none !important;
 }
 
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .sidebar-section {
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) .sii-form-sidebar-panel .sidebar-section {
   padding-left: 15px;
   padding-right: 15px;
 }
 
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .form-sidebar-label {
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) .sii-form-sidebar-panel .form-sidebar-label {
   width: 22px;
   min-width: 22px;
   overflow: hidden;
   white-space: nowrap;
 }
 
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .form-sidebar-items {
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) .sii-form-sidebar-panel .form-sidebar-items {
   flex-wrap: nowrap;
   width: 22px;
 }
 
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .form-sidebar-items > .icon-btn {
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) .sii-form-sidebar-panel .form-sidebar-items > .icon-btn {
   display: none;
 }
 

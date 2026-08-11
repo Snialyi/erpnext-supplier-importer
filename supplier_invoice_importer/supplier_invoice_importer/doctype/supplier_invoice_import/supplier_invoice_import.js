@@ -25,6 +25,10 @@ function expand_import_form(frm) {
     : frm.page.sidebar;
   if (sidebar_wrapper && sidebar_wrapper.length) {
     sidebar_wrapper.show().addClass("sii-form-sidebar-compact");
+    const sidebar_panel = frm.sidebar && frm.sidebar.sidebar
+      ? frm.sidebar.sidebar
+      : sidebar_wrapper.find(".form-sidebar").first();
+    sidebar_panel.addClass("sii-form-sidebar-panel");
     keep_form_sidebar_available(sidebar_wrapper);
     setup_form_sidebar_toggle(frm, sidebar_wrapper);
   }
