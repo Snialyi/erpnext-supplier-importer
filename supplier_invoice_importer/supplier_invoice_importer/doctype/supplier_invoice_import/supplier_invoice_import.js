@@ -133,6 +133,7 @@ function setup_resizable_item_columns(frm) {
 function schedule_item_grid_enhancements(frm) {
   [0, 250, 800].forEach((delay) => {
     setTimeout(() => {
+      show_all_items(frm);
       setup_resizable_item_columns(frm);
       apply_item_filter(frm);
       paint_purchase_rate_changes(frm);
@@ -143,11 +144,14 @@ function schedule_item_grid_enhancements(frm) {
 function show_all_items(frm) {
   const grid = frm.fields_dict.items && frm.fields_dict.items.grid;
   if (!grid || !grid.grid_pagination) return;
-  const page_length = Math.max((frm.doc.items || []).length, 100);
+  const page_length = 500;
+  if (grid.meta) {
+    grid.meta.grid_page_length = page_length;
+  }
   if (grid.grid_pagination.page_length !== page_length) {
     grid.grid_pagination.page_length = page_length;
     grid.grid_pagination.page_index = 1;
-    grid.grid_pagination.total_pages = 1;
+    grid.grid_pagination.total_pages = Math.max(1, Math.ceil(grid.data.length / page_length));
     grid.refresh();
   }
   grid.wrapper.find(".grid-pagination").hide();
