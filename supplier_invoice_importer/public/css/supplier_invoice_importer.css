@@ -5,8 +5,8 @@
 }
 
 .sii-expanded-form .layout-main-section-wrapper {
-  width: calc(100% - 52px) !important;
-  flex: 0 0 calc(100% - 52px) !important;
+  width: 100% !important;
+  flex: 1 1 100% !important;
 }
 
 .sii-expanded-form [data-fieldname="items"] .grid-heading-row .grid-static-col {
@@ -75,69 +75,10 @@
   background-color: #e7f3ff !important;
 }
 
-.sii-expanded-form .layout-side-section.sii-form-sidebar-compact {
-  display: block !important;
-  min-width: 52px !important;
-  width: 52px !important;
-  flex: 0 0 52px !important;
-  overflow: visible !important;
-  z-index: 1030;
-}
-
-.sii-expanded-form .sii-form-sidebar-panel {
-  position: absolute;
-  right: 0;
-  width: 52px !important;
-  height: calc(100vh - var(--page-head-height));
-  overflow: hidden;
-  background: var(--fg-color);
-  border-left: 1px solid var(--border-color);
-  transition: width 180ms ease, box-shadow 180ms ease;
-}
-
-.sii-expanded-form .sii-form-sidebar-compact.sii-form-sidebar-open .sii-form-sidebar-panel {
-  width: var(--form-sidebar-width, 320px) !important;
-  overflow-y: auto;
-  box-shadow: var(--shadow-lg);
-}
-
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) .sii-form-sidebar-panel .sidebar-meta-details,
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) .sii-form-sidebar-panel .sidebar-rating,
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) .sii-form-sidebar-panel .user-actions,
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) .sii-form-sidebar-panel .sidebar-menu,
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) .sii-form-sidebar-panel .assignments,
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) .sii-form-sidebar-panel .attachments-actions + *,
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) .sii-form-sidebar-panel .form-tag-row,
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) .sii-form-sidebar-panel .shares,
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) .sii-form-sidebar-panel .followed-by-section {
-  display: none !important;
-}
-
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) .sii-form-sidebar-panel .sidebar-section {
-  padding-left: 15px;
-  padding-right: 15px;
-}
-
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) .sii-form-sidebar-panel .form-sidebar-label {
-  width: 22px;
-  min-width: 22px;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) .sii-form-sidebar-panel .form-sidebar-items {
-  flex-wrap: nowrap;
-  width: 22px;
-}
-
-.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) .sii-form-sidebar-panel .form-sidebar-items > .icon-btn {
-  display: none;
-}
-
 .sii-sidebar-toggle {
   position: fixed;
   top: 50%;
-  right: 52px;
+  right: 0;
   z-index: 1040;
   width: 30px;
   height: 54px;
@@ -163,15 +104,8 @@
   right: var(--form-sidebar-width, 320px);
 }
 
-@media (min-width: 992px) {
-  .body-sidebar-container.sii-auto-compact:not(.expanded) .body-sidebar:hover {
-    position: absolute;
-    width: var(--sidebar-width);
-    box-shadow: var(--shadow-lg);
-  }
-
-  .body-sidebar-container.sii-auto-compact:not(.expanded) .body-sidebar:hover .nav-item {
-    padding-left: 8px;
-    padding-right: 8px;
+@media (max-width: 991px) {
+  .sii-sidebar-toggle.sidebar-open {
+    right: 0;
   }
 }

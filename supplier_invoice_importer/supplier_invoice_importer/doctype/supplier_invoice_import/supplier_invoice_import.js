@@ -23,60 +23,34 @@ function expand_import_form(frm) {
   const sidebar_wrapper = frm.sidebar && frm.sidebar.sidebar
     ? frm.sidebar.sidebar.parent()
     : frm.page.sidebar;
-  if (sidebar_wrapper && sidebar_wrapper.length) {
-    sidebar_wrapper.show().addClass("sii-form-sidebar-compact");
-    const sidebar_panel = frm.sidebar && frm.sidebar.sidebar
-      ? frm.sidebar.sidebar
-      : sidebar_wrapper.find(".form-sidebar").first();
-    sidebar_panel.addClass("sii-form-sidebar-panel");
-    keep_form_sidebar_available(sidebar_wrapper);
-    setup_form_sidebar_toggle(frm, sidebar_wrapper);
+  if (sidebar_wrapper && sidebar_wrapper.length && sidebar_wrapper.is(":visible")) {
+    sidebar_wrapper.hide();
+    $(document.body).trigger("toggleSidebar");
   }
-  setup_compact_desk_sidebar();
+  setup_sidebar_arrow(frm, sidebar_wrapper);
 }
 
-function setup_form_sidebar_toggle(frm, sidebar_wrapper) {
-  sidebar_wrapper.removeClass("sii-form-sidebar-open");
-  $(document).off("click.sii-sidebar-collapse mousemove.sii-sidebar-state");
+function setup_sidebar_arrow(frm, sidebar_wrapper) {
+  if (!sidebar_wrapper || !sidebar_wrapper.length) return;
   let button = frm.page.wrapper.find(".sii-sidebar-toggle");
   if (!button.length) {
     button = $('<button type="button" class="sii-sidebar-toggle"></button>')
       .appendTo(frm.page.wrapper)
       .on("click", () => {
-        sidebar_wrapper.toggleClass("sii-form-sidebar-open");
-        update_form_sidebar_toggle(button, sidebar_wrapper);
+        frm.toolbar.setup_sidebar_toggle(sidebar_wrapper);
+        setTimeout(() => update_sidebar_arrow(button, sidebar_wrapper), 50);
       });
   }
-  update_form_sidebar_toggle(button, sidebar_wrapper);
+  update_sidebar_arrow(button, sidebar_wrapper);
 }
 
-function update_form_sidebar_toggle(button, sidebar_wrapper) {
-  const is_open = sidebar_wrapper.hasClass("sii-form-sidebar-open");
+function update_sidebar_arrow(button, sidebar_wrapper) {
+  const is_open = sidebar_wrapper.is(":visible");
   button
     .html(frappe.utils.icon(is_open ? "right" : "left", "sm"))
-    .attr("aria-label", is_open ? "Згорнути праву панель" : "Розгорнути праву панель")
-    .attr("title", is_open ? "Згорнути праву панель" : "Розгорнути праву панель")
+    .attr("aria-label", is_open ? "Сховати праву панель" : "Показати праву панель")
+    .attr("title", is_open ? "Сховати праву панель" : "Показати праву панель")
     .toggleClass("sidebar-open", is_open);
-}
-
-function keep_form_sidebar_available(sidebar_wrapper) {
-  if (sidebar_wrapper.data("sii-visibility-observer")) return;
-  const observer = new MutationObserver(() => {
-    if (!sidebar_wrapper.is(":visible")) {
-      sidebar_wrapper.show().addClass("sii-form-sidebar-compact");
-    }
-  });
-  observer.observe(sidebar_wrapper.get(0), { attributes: true, attributeFilter: ["class", "style"] });
-  sidebar_wrapper.data("sii-visibility-observer", observer);
-}
-
-function setup_compact_desk_sidebar() {
-  const desk_sidebar = $(".body-sidebar-container");
-  if (!desk_sidebar.length) return;
-  desk_sidebar.addClass("sii-auto-compact");
-  if (frappe.app && frappe.app.sidebar && frappe.app.sidebar.sidebar_expanded) {
-    frappe.app.sidebar.close();
-  }
 }
 
 function get_saved_grid_widths() {
