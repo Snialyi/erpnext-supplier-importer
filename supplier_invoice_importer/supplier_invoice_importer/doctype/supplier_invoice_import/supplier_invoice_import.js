@@ -25,9 +25,21 @@ function expand_import_form(frm) {
     : frm.page.sidebar;
   if (sidebar_wrapper && sidebar_wrapper.length) {
     sidebar_wrapper.show().addClass("sii-form-sidebar-compact");
+    keep_form_sidebar_available(sidebar_wrapper);
   }
   frm.page.wrapper.find(".sii-sidebar-toggle").remove();
   setup_compact_desk_sidebar();
+}
+
+function keep_form_sidebar_available(sidebar_wrapper) {
+  if (sidebar_wrapper.data("sii-visibility-observer")) return;
+  const observer = new MutationObserver(() => {
+    if (!sidebar_wrapper.is(":visible")) {
+      sidebar_wrapper.show().addClass("sii-form-sidebar-compact");
+    }
+  });
+  observer.observe(sidebar_wrapper.get(0), { attributes: true, attributeFilter: ["class", "style"] });
+  sidebar_wrapper.data("sii-visibility-observer", observer);
 }
 
 function setup_compact_desk_sidebar() {
@@ -47,8 +59,8 @@ function get_saved_grid_widths() {
   }
 }
 
-function apply_grid_column_width(grid, fieldname, width) {
-  grid.wrapper.find(`[data-fieldname="${fieldname}"]`).css({
+function apply_grid_column_width(grid, column_index, width) {
+  grid.wrapper.find(`.grid-row > .grid-static-col:nth-child(${column_index + 1})`).css({
     width: `${width}px`,
     minWidth: `${width}px`,
     maxWidth: `${width}px`,
@@ -60,40 +72,42 @@ function setup_resizable_item_columns(frm) {
   const grid = frm.fields_dict.items && frm.fields_dict.items.grid;
   if (!grid) return;
   const widths = get_saved_grid_widths();
-  Object.entries(widths).forEach(([fieldname, width]) => {
-    apply_grid_column_width(grid, fieldname, width);
+  Object.entries(widths).forEach(([column_index, width]) => {
+    apply_grid_column_width(grid, Number(column_index), width);
   });
 
   grid.wrapper
-    .find(".grid-heading-row .grid-static-col[data-fieldname]")
+    .find(".grid-heading-row .grid-row > .grid-static-col")
     .each((index, element) => {
       const column = $(element);
       if (column.find(".sii-column-resizer").length) return;
-      const fieldname = column.attr("data-fieldname");
+      if (index === 0 || column.hasClass("row-index")) return;
       $('<span class="sii-column-resizer" title="Потягніть, щоб змінити ширину"></span>')
         .appendTo(column)
-        .on("mousedown", (event) => {
+        .on("pointerdown", (event) => {
           event.preventDefault();
           event.stopPropagation();
           const start_x = event.pageX;
           const start_width = column.outerWidth();
+          $(document.body).addClass("sii-resizing-column");
           $(document)
-            .off("mousemove.sii-column-resize mouseup.sii-column-resize")
-            .on("mousemove.sii-column-resize", (move_event) => {
+            .off("pointermove.sii-column-resize pointerup.sii-column-resize")
+            .on("pointermove.sii-column-resize", (move_event) => {
               const width = Math.max(70, Math.min(600, start_width + move_event.pageX - start_x));
-              apply_grid_column_width(grid, fieldname, width);
+              apply_grid_column_width(grid, index, width);
             })
-            .on("mouseup.sii-column-resize", () => {
+            .on("pointerup.sii-column-resize", () => {
               const saved_widths = get_saved_grid_widths();
-              saved_widths[fieldname] = Math.round(column.outerWidth());
+              saved_widths[index] = Math.round(column.outerWidth());
               localStorage.setItem("sii-item-column-widths", JSON.stringify(saved_widths));
-              $(document).off("mousemove.sii-column-resize mouseup.sii-column-resize");
+              $(document.body).removeClass("sii-resizing-column");
+              $(document).off("pointermove.sii-column-resize pointerup.sii-column-resize");
             });
         });
     });
 }
 
-function show_all_items_in_scroll(frm) {
+function show_all_items(frm) {
   const grid = frm.fields_dict.items && frm.fields_dict.items.grid;
   if (!grid || !grid.grid_pagination) return;
   const page_length = Math.max(grid.data.length, 50);
@@ -104,6 +118,43 @@ function show_all_items_in_scroll(frm) {
     grid.grid_pagination.go_to_page(1, true);
   }
   grid.wrapper.find(".grid-pagination").hide();
+}
+
+function setup_item_filter(frm) {
+  const grid = frm.fields_dict.items && frm.fields_dict.items.grid;
+  if (!grid) return;
+  let toolbar = grid.wrapper.find(".sii-item-filter-toolbar");
+  if (!toolbar.length) {
+    toolbar = $(
+      '<div class="sii-item-filter-toolbar"><label>Показати товари:</label><select class="form-control input-sm">' +
+      '<option value="all">Усі</option><option value="new">Нові</option>' +
+      '<option value="existing">Існуючі</option><option value="increased">Закупівельна ціна зросла</option>' +
+      '<option value="decreased">Закупівельна ціна знизилась</option><option value="no-history">Без історії ціни</option>' +
+      '</select><span class="sii-filter-count"></span></div>'
+    ).prependTo(grid.wrapper);
+    toolbar.find("select").on("change", () => apply_item_filter(frm));
+  }
+  apply_item_filter(frm);
+}
+
+function apply_item_filter(frm) {
+  const grid = frm.fields_dict.items && frm.fields_dict.items.grid;
+  if (!grid) return;
+  const toolbar = grid.wrapper.find(".sii-item-filter-toolbar");
+  const filter = toolbar.find("select").val() || "all";
+  let visible = 0;
+  grid.grid_rows.forEach((grid_row) => {
+    const doc = grid_row.doc;
+    const matches = filter === "all"
+      || (filter === "new" && doc.match_status === "New")
+      || (filter === "existing" && doc.match_status === "Existing")
+      || (filter === "increased" && doc.purchase_rate_status === "Increased")
+      || (filter === "decreased" && doc.purchase_rate_status === "Decreased")
+      || (filter === "no-history" && ["New", "No History"].includes(doc.purchase_rate_status));
+    grid_row.wrapper.toggle(matches);
+    if (matches) visible += 1;
+  });
+  toolbar.find(".sii-filter-count").text(`Показано: ${visible} із ${grid.grid_rows.length}`);
 }
 
 function localize_item_grid(frm) {
@@ -125,7 +176,8 @@ frappe.ui.form.on("Supplier Invoice Import", {
   refresh(frm) {
     expand_import_form(frm);
     localize_item_grid(frm);
-    show_all_items_in_scroll(frm);
+    show_all_items(frm);
+    setup_item_filter(frm);
     setup_resizable_item_columns(frm);
     paint_purchase_rate_changes(frm);
     if (!frm.is_new() && frm.doc.source_file) {
@@ -204,14 +256,16 @@ frappe.ui.form.on("Supplier Invoice Import", {
     }
   },
   items_on_form_rendered(frm) {
-    show_all_items_in_scroll(frm);
+    show_all_items(frm);
+    setup_item_filter(frm);
     setup_resizable_item_columns(frm);
     paint_purchase_rate_changes(frm);
   },
   setup(frm) {
     $(frm.wrapper).on("grid-row-render.purchase-rate-colors", (event, grid_row) => {
       if (grid_row.grid.df.fieldname === "items") {
-        show_all_items_in_scroll(frm);
+        show_all_items(frm);
+        setup_item_filter(frm);
         setup_resizable_item_columns(frm);
         paint_purchase_rate_changes(frm);
       }

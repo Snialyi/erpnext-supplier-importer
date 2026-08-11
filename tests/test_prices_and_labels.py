@@ -61,6 +61,9 @@ class PricesAndLabelsTestCase(unittest.TestCase):
         self.assertIn("sii-form-sidebar-compact", form_script)
         self.assertIn("grid.grid_pagination.page_length", form_script)
         self.assertIn("sii-item-column-widths", form_script)
+        self.assertIn("sii-item-filter-toolbar", form_script)
+        self.assertIn('filter === "new"', form_script)
+        self.assertIn("pointermove.sii-column-resize", form_script)
         self.assertIn("setup_compact_desk_sidebar", form_script)
 
         hooks = (ROOT / "supplier_invoice_importer" / "hooks.py").read_text(encoding="utf-8")
