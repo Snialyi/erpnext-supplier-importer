@@ -41,6 +41,10 @@ bench get-app https://github.com/Snialyi/erpnext-supplier-importer.git --branch 
 bench --site your-site.local install-app supplier_invoice_importer
 ```
 
+For persistent Docker Compose deployments, build and run the custom image as
+described in [`deploy/README.md`](deploy/README.md). Installing only inside a
+running container is not persistent and is not supported.
+
 ## License
 
 MIT
