@@ -53,14 +53,32 @@ function update_sidebar_arrow(frm, button, sidebar_wrapper) {
     .attr("aria-label", is_open ? "Сховати праву панель" : "Показати праву панель")
     .attr("title", is_open ? "Сховати праву панель" : "Показати праву панель")
     .toggleClass("sidebar-open", is_open);
-  $(document.body).find(".sii-sidebar-actions").toggleClass("sidebar-open", is_open);
+  const actions = $(document.body).find(".sii-sidebar-actions");
+  actions.toggleClass("sidebar-open", is_open);
+  actions.toggle(!is_open);
 }
 
 function setup_sidebar_actions(frm, sidebar_wrapper) {
   let actions = $(document.body).find(".sii-sidebar-actions");
   if (!actions.length) {
     actions = $('<div class="sii-sidebar-actions" aria-label="Швидкі дії правої панелі"></div>')
-      .appendTo(document.body);
+      .appendTo(document.body)
+      .css({
+        position: "fixed",
+        top: "calc(50% - 92px)",
+        right: "6px",
+        zIndex: 1039,
+        width: "44px",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: "6px",
+        padding: "7px 3px",
+        border: "1px solid var(--border-color)",
+        borderRadius: "10px",
+        background: "var(--fg-color)",
+        boxShadow: "var(--shadow-sm)",
+      });
     [
       [sidebar_action_icon("users"), "Призначити", ".add-assignment-label"],
       [sidebar_action_icon("paperclip"), "Додати вкладення", ".add-attachment-btn"],
@@ -69,13 +87,40 @@ function setup_sidebar_actions(frm, sidebar_wrapper) {
     ].forEach(([icon_markup, title, selector]) => {
       $('<button type="button" class="sii-sidebar-action"></button>')
         .html(icon_markup)
+        .css({
+          width: "36px",
+          height: "36px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: 0,
+          border: "1px solid transparent",
+          borderRadius: "8px",
+          background: "var(--control-bg)",
+          color: "var(--text-muted)",
+          cursor: "pointer",
+        })
         .attr("aria-label", title)
         .attr("title", title)
         .appendTo(actions)
+        .find("svg")
+        .css({
+          width: "19px",
+          height: "19px",
+          fill: "none",
+          stroke: "currentColor",
+          strokeWidth: 1.8,
+          strokeLinecap: "round",
+          strokeLinejoin: "round",
+          pointerEvents: "none",
+        })
+        .end()
         .on("click", () => open_sidebar_action(frm, sidebar_wrapper, selector));
     });
   }
-  actions.toggleClass("sidebar-open", sidebar_wrapper.is(":visible"));
+  const is_open = sidebar_wrapper.is(":visible");
+  actions.toggleClass("sidebar-open", is_open);
+  actions.toggle(!is_open);
 }
 
 function sidebar_action_icon(name) {
