@@ -41,6 +41,7 @@ class PricesAndLabelsTestCase(unittest.TestCase):
         self.assertIn('frappe.get_cached_value("Company", company, "default_currency")', source)
         self.assertIn('frappe.db.get_value(\n        "Bin"', source)
         self.assertIn('"purchase_rate_source": purchase_rate_source', source)
+        self.assertIn('"purchase_rate_difference": purchase_rate_difference', source)
         self.assertIn('"purchase_rate_change": purchase_rate_change', source)
         self.assertIn('"purchase_rate_status": purchase_rate_status', source)
 

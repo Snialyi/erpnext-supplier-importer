@@ -218,6 +218,9 @@ def analyze_import(name: str) -> dict:
             previous_purchase_rate,
             match_status,
         )
+        purchase_rate_difference = (
+            base_rate - previous_purchase_rate if previous_purchase_rate > 0 else 0
+        )
         counts[match_status] += 1
         doc.append("items", {
             **source,
@@ -229,6 +232,7 @@ def analyze_import(name: str) -> dict:
             "previous_purchase_receipt": previous_purchase_receipt,
             "purchase_rate_source": purchase_rate_source,
             "purchase_rate_change": purchase_rate_change,
+            "purchase_rate_difference": purchase_rate_difference,
             "purchase_rate_status": purchase_rate_status,
             "selling_price": selling_price,
             "item_price": item_price,
