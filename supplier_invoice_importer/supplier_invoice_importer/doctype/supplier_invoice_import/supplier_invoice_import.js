@@ -99,10 +99,14 @@ function setup_resizable_item_columns(frm) {
     apply_grid_column_width(grid, fieldname, width);
   });
 
-  grid.wrapper
-    .find(".grid-heading-row .grid-static-col[data-fieldname]")
+  const header = grid.header_row && grid.header_row.row;
+  if (!header || !header.length) return;
+
+  header
+    .find(".grid-static-col[data-fieldname]")
     .each((index, element) => {
       const column = $(element);
+      column.css("position", "relative");
       if (column.find(".sii-column-resizer").length) return;
       const fieldname = column.attr("data-fieldname");
       $('<span class="sii-column-resizer" title="Потягніть, щоб змінити ширину"></span>')
