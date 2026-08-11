@@ -1,5 +1,5 @@
 {
- "actions": [], "creation": "2026-08-11 00:00:00.000000", "doctype": "DocType", "editable_grid": 1, "engine": "InnoDB",
+ "actions": [], "creation": "2026-08-11 00:00:00.000000", "doctype": "DocType", "editable_grid": 1, "engine": "InnoDB", "grid_page_length": 500,
  "field_order": ["row_no","supplier_code","barcode","item_code","item_name","qty","source_uom","uom","source_rate","source_amount","base_rate","base_amount","previous_purchase_rate","previous_purchase_receipt","purchase_rate_source","purchase_rate_difference","purchase_rate_change","purchase_rate_status","selling_price","item_price","match_status","create_item","error_message"],
  "fields": [
   {"fieldname":"row_no","fieldtype":"Int","label":"Рядок Excel","read_only":1},

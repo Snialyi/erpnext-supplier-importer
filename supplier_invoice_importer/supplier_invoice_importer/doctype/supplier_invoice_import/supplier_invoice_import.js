@@ -133,28 +133,11 @@ function setup_resizable_item_columns(frm) {
 function schedule_item_grid_enhancements(frm) {
   [0, 250, 800].forEach((delay) => {
     setTimeout(() => {
-      show_all_items(frm);
       setup_resizable_item_columns(frm);
       apply_item_filter(frm);
       paint_purchase_rate_changes(frm);
     }, delay);
   });
-}
-
-function show_all_items(frm) {
-  const grid = frm.fields_dict.items && frm.fields_dict.items.grid;
-  if (!grid || !grid.grid_pagination) return;
-  const page_length = 500;
-  if (grid.meta) {
-    grid.meta.grid_page_length = page_length;
-  }
-  if (grid.grid_pagination.page_length !== page_length) {
-    grid.grid_pagination.page_length = page_length;
-    grid.grid_pagination.page_index = 1;
-    grid.grid_pagination.total_pages = Math.max(1, Math.ceil(grid.data.length / page_length));
-    grid.refresh();
-  }
-  grid.wrapper.find(".grid-pagination").hide();
 }
 
 function setup_item_filter(frm) {
@@ -213,7 +196,6 @@ frappe.ui.form.on("Supplier Invoice Import", {
   refresh(frm) {
     expand_import_form(frm);
     localize_item_grid(frm);
-    show_all_items(frm);
     setup_item_filter(frm);
     schedule_item_grid_enhancements(frm);
     if (!frm.is_new() && frm.doc.source_file) {
@@ -292,14 +274,12 @@ frappe.ui.form.on("Supplier Invoice Import", {
     }
   },
   items_on_form_rendered(frm) {
-    show_all_items(frm);
     setup_item_filter(frm);
     schedule_item_grid_enhancements(frm);
   },
   setup(frm) {
     $(frm.wrapper).on("grid-row-render.purchase-rate-colors", (event, grid_row) => {
       if (grid_row.grid.df.fieldname === "items") {
-        show_all_items(frm);
         setup_item_filter(frm);
         schedule_item_grid_enhancements(frm);
       }
