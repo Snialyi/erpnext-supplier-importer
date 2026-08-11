@@ -6,3 +6,9 @@ app_email = "andrey.welcome.ua@gmail.com"
 app_license = "MIT"
 
 app_include_css = "/assets/supplier_invoice_importer/css/supplier_invoice_importer.css"
+
+jenv = {
+    "methods": [
+        "supplier_invoice_importer.barcode.code128_svg",
+    ]
+}
