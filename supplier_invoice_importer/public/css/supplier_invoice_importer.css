@@ -9,6 +9,11 @@
   flex: 1 1 100% !important;
 }
 
+.sii-expanded-form.sii-sidebar-visible .layout-main-section-wrapper {
+  width: calc(100% - var(--form-sidebar-width)) !important;
+  flex: 0 0 calc(100% - var(--form-sidebar-width)) !important;
+}
+
 .sii-expanded-form [data-fieldname="items"] .grid-body {
   max-height: 68vh;
   overflow-y: auto;
@@ -17,6 +22,34 @@
 
 .sii-expanded-form [data-fieldname="items"] .grid-pagination {
   display: none !important;
+}
+
+.sii-expanded-form [data-fieldname="items"] .form-grid {
+  overflow-x: auto;
+}
+
+.sii-expanded-form [data-fieldname="items"] .grid-row {
+  min-width: max-content;
+}
+
+.sii-expanded-form [data-fieldname="items"] .grid-heading-row .grid-static-col {
+  position: relative;
+}
+
+.sii-column-resizer {
+  position: absolute;
+  top: 0;
+  right: -4px;
+  z-index: 5;
+  width: 8px;
+  height: 100%;
+  cursor: col-resize;
+  user-select: none;
+}
+
+.sii-column-resizer:hover,
+.sii-column-resizer:active {
+  border-right: 2px solid var(--primary);
 }
 
 .sii-sidebar-toggle {
@@ -50,5 +83,18 @@
 @media (max-width: 991px) {
   .sii-sidebar-toggle.sidebar-open {
     right: 0;
+  }
+}
+
+@media (min-width: 992px) {
+  .body-sidebar-container.sii-auto-compact:not(.expanded) .body-sidebar:hover {
+    position: absolute;
+    width: var(--sidebar-width);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .body-sidebar-container.sii-auto-compact:not(.expanded) .body-sidebar:hover .nav-item {
+    padding-left: 8px;
+    padding-right: 8px;
   }
 }

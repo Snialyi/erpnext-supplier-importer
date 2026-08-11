@@ -60,6 +60,8 @@ class PricesAndLabelsTestCase(unittest.TestCase):
         self.assertIn("sidebar_wrapper.hide()", form_script)
         self.assertIn("sii-sidebar-toggle", form_script)
         self.assertIn("grid.grid_pagination.page_length", form_script)
+        self.assertIn("sii-item-column-widths", form_script)
+        self.assertIn("setup_compact_desk_sidebar", form_script)
 
         hooks = (ROOT / "supplier_invoice_importer" / "hooks.py").read_text(encoding="utf-8")
         self.assertIn("supplier_invoice_importer.css", hooks)

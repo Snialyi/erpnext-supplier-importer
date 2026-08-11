@@ -28,6 +28,7 @@ function expand_import_form(frm) {
     $(document.body).trigger("toggleSidebar");
   }
   setup_sidebar_arrow(frm, sidebar_wrapper);
+  setup_compact_desk_sidebar();
 }
 
 function setup_sidebar_arrow(frm, sidebar_wrapper) {
@@ -38,19 +39,83 @@ function setup_sidebar_arrow(frm, sidebar_wrapper) {
       .appendTo(frm.page.wrapper)
       .on("click", () => {
         frm.toolbar.setup_sidebar_toggle(sidebar_wrapper);
-        setTimeout(() => update_sidebar_arrow(button, sidebar_wrapper), 50);
+        setTimeout(() => update_sidebar_arrow(frm, button, sidebar_wrapper), 50);
       });
   }
-  update_sidebar_arrow(button, sidebar_wrapper);
+  update_sidebar_arrow(frm, button, sidebar_wrapper);
 }
 
-function update_sidebar_arrow(button, sidebar_wrapper) {
+function update_sidebar_arrow(frm, button, sidebar_wrapper) {
   const is_open = sidebar_wrapper.is(":visible");
+  frm.page.wrapper.toggleClass("sii-sidebar-visible", is_open);
   button
     .html(frappe.utils.icon(is_open ? "right" : "left", "sm"))
     .attr("aria-label", is_open ? "Сховати бічну панель" : "Показати бічну панель")
     .attr("title", is_open ? "Сховати бічну панель" : "Показати бічну панель")
     .toggleClass("sidebar-open", is_open);
+}
+
+function setup_compact_desk_sidebar() {
+  const desk_sidebar = $(".body-sidebar-container");
+  if (!desk_sidebar.length) return;
+  desk_sidebar.addClass("sii-auto-compact");
+  if (frappe.app && frappe.app.sidebar && frappe.app.sidebar.sidebar_expanded) {
+    frappe.app.sidebar.close();
+  }
+}
+
+function get_saved_grid_widths() {
+  try {
+    return JSON.parse(localStorage.getItem("sii-item-column-widths") || "{}");
+  } catch (error) {
+    return {};
+  }
+}
+
+function apply_grid_column_width(grid, fieldname, width) {
+  grid.wrapper.find(`[data-fieldname="${fieldname}"]`).css({
+    width: `${width}px`,
+    minWidth: `${width}px`,
+    maxWidth: `${width}px`,
+    flex: `0 0 ${width}px`,
+  });
+}
+
+function setup_resizable_item_columns(frm) {
+  const grid = frm.fields_dict.items && frm.fields_dict.items.grid;
+  if (!grid) return;
+  const widths = get_saved_grid_widths();
+  Object.entries(widths).forEach(([fieldname, width]) => {
+    apply_grid_column_width(grid, fieldname, width);
+  });
+
+  grid.wrapper
+    .find(".grid-heading-row .grid-static-col[data-fieldname]")
+    .each((index, element) => {
+      const column = $(element);
+      if (column.find(".sii-column-resizer").length) return;
+      const fieldname = column.attr("data-fieldname");
+      $('<span class="sii-column-resizer" title="Потягніть, щоб змінити ширину"></span>')
+        .appendTo(column)
+        .on("mousedown", (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          const start_x = event.pageX;
+          const start_width = column.outerWidth();
+          $(document)
+            .off("mousemove.sii-column-resize mouseup.sii-column-resize")
+            .on("mousemove.sii-column-resize", (move_event) => {
+              const width = Math.max(70, Math.min(600, start_width + move_event.pageX - start_x));
+              apply_grid_column_width(grid, fieldname, width);
+            })
+            .on("mouseup.sii-column-resize", () => {
+              const saved_widths = get_saved_grid_widths();
+              saved_widths[fieldname] = Math.round(column.outerWidth());
+              localStorage.setItem("sii-item-column-widths", JSON.stringify(saved_widths));
+              $(document).off("mousemove.sii-column-resize mouseup.sii-column-resize");
+            });
+        });
+    });
 }
 
 function show_all_items_in_scroll(frm) {
@@ -86,6 +151,7 @@ frappe.ui.form.on("Supplier Invoice Import", {
     expand_import_form(frm);
     localize_item_grid(frm);
     show_all_items_in_scroll(frm);
+    setup_resizable_item_columns(frm);
     paint_purchase_rate_changes(frm);
     if (!frm.is_new() && frm.doc.source_file) {
       frm.add_custom_button(__("Analyze Excel"), () => {
@@ -164,12 +230,14 @@ frappe.ui.form.on("Supplier Invoice Import", {
   },
   items_on_form_rendered(frm) {
     show_all_items_in_scroll(frm);
+    setup_resizable_item_columns(frm);
     paint_purchase_rate_changes(frm);
   },
   setup(frm) {
     $(frm.wrapper).on("grid-row-render.purchase-rate-colors", (event, grid_row) => {
       if (grid_row.grid.df.fieldname === "items") {
         show_all_items_in_scroll(frm);
+        setup_resizable_item_columns(frm);
         paint_purchase_rate_changes(frm);
       }
     });
