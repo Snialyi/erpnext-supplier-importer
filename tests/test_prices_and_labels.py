@@ -37,6 +37,8 @@ class PricesAndLabelsTestCase(unittest.TestCase):
         self.assertIn("_get_previous_purchase_rate", source)
         self.assertIn("pr.docstatus = 1", source)
         self.assertIn("pr.supplier = %(supplier)s", source)
+        self.assertIn("buying = 1", source)
+        self.assertIn('frappe.get_cached_value("Company", company, "default_currency")', source)
         self.assertIn('"purchase_rate_change": purchase_rate_change', source)
         self.assertIn('"purchase_rate_status": purchase_rate_status', source)
 

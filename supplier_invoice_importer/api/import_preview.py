@@ -75,8 +75,9 @@ def _get_previous_purchase_rate(
     item_code: str | None,
     supplier: str,
     posting_date: str,
+    company: str,
 ) -> tuple[float, str | None]:
-    """Return the latest submitted receipt rate in company currency for this supplier."""
+    """Return the latest receipt rate, falling back to a generic buying Item Price."""
     if not item_code:
         return 0.0, None
 
@@ -101,9 +102,35 @@ def _get_previous_purchase_rate(
         },
         as_dict=True,
     )
-    if not values:
+    if values:
+        return flt(values[0].base_rate), values[0].purchase_receipt
+
+    company_currency = frappe.get_cached_value("Company", company, "default_currency")
+    buying_prices = frappe.db.sql(
+        """
+        SELECT name, price_list_rate
+          FROM `tabItem Price`
+         WHERE item_code = %(item_code)s
+           AND buying = 1
+           AND currency = %(currency)s
+           AND IFNULL(batch_no, '') = ''
+           AND IFNULL(customer, '') = ''
+           AND IFNULL(supplier, '') = ''
+           AND (valid_from IS NULL OR valid_from <= %(posting_date)s)
+           AND (valid_upto IS NULL OR valid_upto >= %(posting_date)s)
+         ORDER BY modified DESC
+         LIMIT 1
+        """,
+        {
+            "item_code": item_code,
+            "currency": company_currency,
+            "posting_date": posting_date,
+        },
+        as_dict=True,
+    )
+    if not buying_prices:
         return 0.0, None
-    return flt(values[0].base_rate), values[0].purchase_receipt
+    return flt(buying_prices[0].price_list_rate), None
 
 
 def _purchase_rate_change(current_rate: float, previous_rate: float, match_status: str) -> tuple[float, str]:
@@ -174,6 +201,7 @@ def analyze_import(name: str) -> dict:
             item_code,
             doc.supplier,
             parsed["document_date"] or doc.supplier_invoice_date or nowdate(),
+            doc.company,
         )
         purchase_rate_change, purchase_rate_status = _purchase_rate_change(
             base_rate,
