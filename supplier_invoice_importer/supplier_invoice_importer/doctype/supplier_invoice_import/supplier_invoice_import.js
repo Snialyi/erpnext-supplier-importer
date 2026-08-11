@@ -265,10 +265,28 @@ function use_page_scroll_for_item_grid(frm) {
     });
 }
 
+function show_full_item_names(frm) {
+  const grid = frm.fields_dict.items && frm.fields_dict.items.grid;
+  if (!grid) return;
+  apply_grid_column_width(grid, "item_name", 320);
+  grid.wrapper
+    .find('.grid-static-col[data-fieldname="item_name"] .static-area')
+    .css({
+      whiteSpace: "normal",
+      overflow: "visible",
+      textOverflow: "clip",
+      lineHeight: "1.3",
+      height: "auto",
+      minHeight: "36px",
+    });
+  grid.wrapper.find(".grid-body .data-row").css({ height: "auto", minHeight: "44px" });
+}
+
 function schedule_item_grid_enhancements(frm) {
   [0, 250, 800].forEach((delay) => {
     setTimeout(() => {
       use_page_scroll_for_item_grid(frm);
+      show_full_item_names(frm);
       setup_resizable_item_columns(frm);
       apply_item_filter(frm);
       paint_purchase_rate_changes(frm);
