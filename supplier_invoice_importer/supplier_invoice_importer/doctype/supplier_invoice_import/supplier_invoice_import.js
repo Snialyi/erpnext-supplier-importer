@@ -52,24 +52,42 @@ function update_sidebar_arrow(frm, button, sidebar_wrapper) {
   const main_wrapper = frm.page.wrapper.find(".layout-main-section-wrapper");
   if (is_open) {
     sidebar_wrapper.css({
+      position: "fixed",
+      top: "60px",
+      right: 0,
+      bottom: 0,
+      zIndex: 1035,
       width: `${sidebar_width}px`,
       minWidth: `${sidebar_width}px`,
       maxWidth: `${sidebar_width}px`,
-      flex: `0 0 ${sidebar_width}px`,
-      overflow: "visible",
+      height: "auto",
+      overflowX: "hidden",
+      overflowY: "auto",
+      background: "var(--fg-color)",
+      borderLeft: "1px solid var(--border-color)",
+      boxShadow: "var(--shadow-lg)",
     });
-    main_wrapper.css({
-      width: `calc(100% - ${sidebar_width}px)`,
-      flex: `0 0 calc(100% - ${sidebar_width}px)`,
-    });
+    sidebar_wrapper.find(".form-sidebar").css({ width: "100%", maxWidth: "none" });
+    main_wrapper.css({ width: "100%", flex: "1 1 100%" });
   } else {
     sidebar_wrapper.css({
+      position: "",
+      top: "",
+      right: "",
+      bottom: "",
+      zIndex: "",
       width: "",
       minWidth: "",
       maxWidth: "",
       flex: "",
-      overflow: "",
+      height: "",
+      overflowX: "",
+      overflowY: "",
+      background: "",
+      borderLeft: "",
+      boxShadow: "",
     });
+    sidebar_wrapper.find(".form-sidebar").css({ width: "", maxWidth: "" });
     main_wrapper.css({ width: "100%", flex: "1 1 100%" });
   }
   button
@@ -77,7 +95,7 @@ function update_sidebar_arrow(frm, button, sidebar_wrapper) {
     .attr("aria-label", is_open ? "Сховати праву панель" : "Показати праву панель")
     .attr("title", is_open ? "Сховати праву панель" : "Показати праву панель")
     .toggleClass("sidebar-open", is_open)
-    .css("right", is_open ? `${sidebar_width}px` : "48px");
+    .css({ right: "6px", top: "410px", zIndex: 1040 });
   const actions = $(document.body).find(".sii-sidebar-actions");
   actions.toggleClass("sidebar-open", is_open);
   actions.toggle(!is_open);
