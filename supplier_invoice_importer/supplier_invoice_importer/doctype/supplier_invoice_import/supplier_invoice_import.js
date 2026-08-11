@@ -5,6 +5,12 @@ function paint_purchase_rate_changes(frm) {
     New: "sii-rate-new",
     "No History": "sii-rate-new",
   };
+  const colors = {
+    "sii-rate-increased": "#ffe3e3",
+    "sii-rate-decreased": "#e6f7e9",
+    "sii-rate-new": "#fff6d8",
+    "sii-rate-valuation": "#e7f3ff",
+  };
   const grid = frm.fields_dict.items && frm.fields_dict.items.grid;
   if (!grid) return;
   grid.grid_rows.forEach((grid_row) => {
@@ -14,7 +20,10 @@ function paint_purchase_rate_changes(frm) {
     }
     const cells = grid_row.wrapper.find(".data-row, .grid-static-col, .grid-row-check, .row-check");
     cells.removeClass("sii-rate-increased sii-rate-decreased sii-rate-new sii-rate-valuation");
-    if (row_class) cells.addClass(row_class);
+    cells.css("background-color", "");
+    if (row_class) {
+      cells.addClass(row_class).css("background-color", colors[row_class]);
+    }
   });
 }
 
