@@ -95,43 +95,72 @@
   transition: width 180ms ease, box-shadow 180ms ease;
 }
 
-.sii-expanded-form .sii-form-sidebar-compact:hover > .form-sidebar {
+.sii-expanded-form .sii-form-sidebar-compact.sii-form-sidebar-open > .form-sidebar {
   width: var(--form-sidebar-width, 320px) !important;
   overflow-y: auto;
   box-shadow: var(--shadow-lg);
 }
 
-.sii-expanded-form .sii-form-sidebar-compact:not(:hover) > .form-sidebar .sidebar-meta-details,
-.sii-expanded-form .sii-form-sidebar-compact:not(:hover) > .form-sidebar .sidebar-rating,
-.sii-expanded-form .sii-form-sidebar-compact:not(:hover) > .form-sidebar .user-actions,
-.sii-expanded-form .sii-form-sidebar-compact:not(:hover) > .form-sidebar .sidebar-menu,
-.sii-expanded-form .sii-form-sidebar-compact:not(:hover) > .form-sidebar .assignments,
-.sii-expanded-form .sii-form-sidebar-compact:not(:hover) > .form-sidebar .attachments-actions + *,
-.sii-expanded-form .sii-form-sidebar-compact:not(:hover) > .form-sidebar .form-tag-row,
-.sii-expanded-form .sii-form-sidebar-compact:not(:hover) > .form-sidebar .shares,
-.sii-expanded-form .sii-form-sidebar-compact:not(:hover) > .form-sidebar .followed-by-section {
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .sidebar-meta-details,
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .sidebar-rating,
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .user-actions,
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .sidebar-menu,
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .assignments,
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .attachments-actions + *,
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .form-tag-row,
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .shares,
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .followed-by-section {
   display: none !important;
 }
 
-.sii-expanded-form .sii-form-sidebar-compact:not(:hover) > .form-sidebar .sidebar-section {
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .sidebar-section {
   padding-left: 15px;
   padding-right: 15px;
 }
 
-.sii-expanded-form .sii-form-sidebar-compact:not(:hover) > .form-sidebar .form-sidebar-label {
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .form-sidebar-label {
   width: 22px;
   min-width: 22px;
   overflow: hidden;
   white-space: nowrap;
 }
 
-.sii-expanded-form .sii-form-sidebar-compact:not(:hover) > .form-sidebar .form-sidebar-items {
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .form-sidebar-items {
   flex-wrap: nowrap;
   width: 22px;
 }
 
-.sii-expanded-form .sii-form-sidebar-compact:not(:hover) > .form-sidebar .form-sidebar-items > .icon-btn {
+.sii-expanded-form .sii-form-sidebar-compact:not(.sii-form-sidebar-open) > .form-sidebar .form-sidebar-items > .icon-btn {
   display: none;
+}
+
+.sii-sidebar-toggle {
+  position: fixed;
+  top: 50%;
+  right: 52px;
+  z-index: 1040;
+  width: 30px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid var(--border-color);
+  border-right: 0;
+  border-radius: 10px 0 0 10px;
+  background: var(--fg-color);
+  color: var(--text-color);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: right 180ms ease;
+}
+
+.sii-sidebar-toggle:hover {
+  background: var(--control-bg);
+}
+
+.sii-sidebar-toggle.sidebar-open {
+  right: var(--form-sidebar-width, 320px);
 }
 
 @media (min-width: 992px) {
