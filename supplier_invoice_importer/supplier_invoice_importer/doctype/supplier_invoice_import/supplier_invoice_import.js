@@ -100,7 +100,7 @@ function setup_resizable_item_columns(frm) {
   });
 
   grid.wrapper
-    .find(".grid-heading-row .grid-static-col[data-fieldname]")
+    .find(".grid-heading-row .grid-row:not(.filter-row) > .grid-static-col[data-fieldname]")
     .each((index, element) => {
       const column = $(element);
       if (column.find(".sii-column-resizer").length) return;
