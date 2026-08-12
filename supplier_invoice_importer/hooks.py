@@ -5,3 +5,10 @@ app_description = "Import supplier invoices into ERPNext"
 app_email = "andrey.welcome.ua@gmail.com"
 app_license = "MIT"
 
+app_include_css = "/assets/supplier_invoice_importer/css/supplier_invoice_importer.css"
+
+jinja = {
+    "methods": [
+        "supplier_invoice_importer.barcode.code128_svg",
+    ]
+}

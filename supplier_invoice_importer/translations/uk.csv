@@ -1,0 +1,26 @@
+Supplier Invoice Import,Імпорт накладної постачальника
+Supplier Invoice Import Item,Рядок імпорту накладної
+Analyze Excel,Аналізувати Excel
+Analyzing supplier invoice...,Аналізуємо накладну постачальника...
+Actions,Дії
+Draft,Чернетка
+Analyzed,Проаналізовано
+Ready,Готово
+Draft Receipt Created,Створено чернетку приходу
+Draft Invoice Created,Створено чернетку рахунку
+Imported,Імпортовано
+Error,Помилка
+Existing,Існуючий
+New,Новий
+Conflict,Конфлікт
+Increased,Зросла
+Decreased,Знизилася
+Unchanged,Без змін
+No History,Немає історії
+Purchase Receipt,Прихід товару
+Buying Price,Закупівельна ціна
+Valuation Rate,Середня собівартість
+Create Draft Purchase Receipt,Створити чернетку приходу
+Create Draft Purchase Invoice,Створити чернетку рахунку
+Save Selling Prices,Зберегти ціни продажу
+Print Imported Item Labels,Друкувати етикетки імпортованих товарів

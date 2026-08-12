@@ -1,0 +1,37 @@
+{
+ "actions": [], "allow_rename": 0, "autoname": "format:SII-{YYYY}-{#####}", "creation": "2026-08-11 00:00:00.000000", "doctype": "DocType", "engine": "InnoDB",
+ "field_order": ["supplier", "company", "source_file", "section_document", "supplier_invoice_no", "supplier_invoice_date", "warehouse", "default_item_group", "currency", "conversion_rate", "payment_due_date", "selling_price_list", "selling_price_currency", "section_status", "import_status", "file_hash", "duplicate_of", "purchase_receipt", "purchase_invoice", "items", "section_totals", "total_lines", "total_qty", "total_amount", "base_total_amount"],
+ "fields": [
+  {"fieldname":"supplier","fieldtype":"Link","label":"Постачальник","options":"Supplier","reqd":1,"in_list_view":1},
+  {"fieldname":"company","fieldtype":"Link","label":"Компанія","options":"Company","reqd":1},
+  {"fieldname":"source_file","fieldtype":"Attach","label":"Excel-файл постачальника","reqd":1},
+  {"fieldname":"section_document","fieldtype":"Section Break","label":"Документ"},
+  {"fieldname":"supplier_invoice_no","fieldtype":"Data","label":"Номер накладної постачальника","in_list_view":1},
+  {"fieldname":"supplier_invoice_date","fieldtype":"Date","label":"Дата накладної постачальника"},
+  {"fieldname":"warehouse","fieldtype":"Link","label":"Склад приймання","options":"Warehouse","reqd":1},
+  {"fieldname":"default_item_group","fieldtype":"Link","label":"Група для нових товарів","options":"Item Group","reqd":1},
+  {"default":"UAH","fieldname":"currency","fieldtype":"Link","label":"Валюта","options":"Currency","reqd":1},
+  {"default":"1","fieldname":"conversion_rate","fieldtype":"Float","label":"Курс валют","reqd":1},
+  {"fieldname":"payment_due_date","fieldtype":"Date","label":"Термін оплати"},
+  {"fieldname":"selling_price_list","fieldtype":"Link","label":"Прайс-лист продажу","options":"Price List"},
+  {"fetch_from":"selling_price_list.currency","fieldname":"selling_price_currency","fieldtype":"Link","label":"Валюта ціни продажу","options":"Currency","read_only":1},
+  {"fieldname":"section_status","fieldtype":"Section Break","label":"Статус імпорту"},
+  {"default":"Draft","fieldname":"import_status","fieldtype":"Select","label":"Статус","options":"Draft\nAnalyzed\nReady\nDraft Receipt Created\nDraft Invoice Created\nImported\nError","read_only":1,"in_list_view":1},
+  {"fieldname":"file_hash","fieldtype":"Data","label":"File Hash","hidden":1,"read_only":1,"unique":0},
+  {"fieldname":"duplicate_of","fieldtype":"Link","label":"Дублікат документа","options":"Supplier Invoice Import","read_only":1},
+  {"fieldname":"purchase_receipt","fieldtype":"Link","label":"Прихід товару","options":"Purchase Receipt","read_only":1},
+  {"fieldname":"purchase_invoice","fieldtype":"Link","label":"Рахунок постачальника","options":"Purchase Invoice","read_only":1},
+  {"fieldname":"items","fieldtype":"Table","label":"Товари","options":"Supplier Invoice Import Item"},
+  {"fieldname":"section_totals","fieldtype":"Section Break","label":"Підсумки"},
+  {"fieldname":"total_lines","fieldtype":"Int","label":"Кількість позицій","read_only":1},
+  {"fieldname":"total_qty","fieldtype":"Float","label":"Загальна кількість","read_only":1},
+  {"fieldname":"total_amount","fieldtype":"Currency","label":"Сума накладної","options":"currency","read_only":1},
+  {"fieldname":"base_total_amount","fieldtype":"Currency","label":"Сума у валюті компанії","read_only":1}
+ ],
+ "index_web_pages_for_search": 1, "is_submittable": 0, "links": [], "modified": "2026-08-11 00:00:00.000000", "modified_by": "Administrator", "module": "Supplier Invoice Importer", "name": "Supplier Invoice Import", "naming_rule": "Expression", "owner": "Administrator",
+ "permissions": [
+  {"create":1,"delete":1,"email":1,"export":1,"print":1,"read":1,"report":1,"role":"System Manager","share":1,"write":1},
+  {"create":1,"read":1,"report":1,"role":"Purchase Manager","write":1},
+  {"create":1,"read":1,"report":1,"role":"Stock Manager","write":1}
+ ], "sort_field":"modified", "sort_order":"DESC", "states": [], "track_changes": 1
+}
