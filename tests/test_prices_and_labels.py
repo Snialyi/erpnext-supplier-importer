@@ -8,6 +8,7 @@ ROOT = Path(__file__).resolve().parents[1]
 API = ROOT / "supplier_invoice_importer" / "api" / "selling_prices.py"
 PREVIEW_API = ROOT / "supplier_invoice_importer" / "api" / "import_preview.py"
 PRINT_FORMAT = ROOT / "supplier_invoice_importer" / "supplier_invoice_importer" / "print_format" / "imported_item_labels" / "imported_item_labels.json"
+FORM_SCRIPT = ROOT / "supplier_invoice_importer" / "supplier_invoice_importer" / "doctype" / "supplier_invoice_import" / "supplier_invoice_import.js"
 
 
 class PricesAndLabelsTestCase(unittest.TestCase):
@@ -80,6 +81,16 @@ class PricesAndLabelsTestCase(unittest.TestCase):
         self.assertIn("code128_svg(", print_format["html"])
         self.assertIn('class="page-break"', print_format["html"])
         self.assertIn("range(row.qty|int)", print_format["html"])
+
+    def test_label_printing_requires_and_passes_selected_rows(self):
+        form_script = FORM_SCRIPT.read_text(encoding="utf-8")
+        print_format = json.loads(PRINT_FORMAT.read_text(encoding="utf-8"))
+
+        self.assertIn("frm.get_selected()?.items", form_script)
+        self.assertIn('selected_rows: selected_names.join(",")', form_script)
+        self.assertIn("Товари не вибрано", form_script)
+        self.assertIn("{% set selected_rows =", print_format["html"])
+        self.assertIn("{% if row.name in selected_rows %}", print_format["html"])
 
 
 if __name__ == "__main__":

@@ -423,11 +423,23 @@ frappe.ui.form.on("Supplier Invoice Import", {
     }
     if (!frm.is_new() && frm.doc.items && frm.doc.items.length) {
       frm.add_custom_button(__("Print Imported Item Labels"), () => {
+        const selected_names = frm.get_selected()?.items || [];
+
+        if (!selected_names.length) {
+          frappe.msgprint({
+            title: "Товари не вибрано",
+            message: "Позначте потрібні товари галочками в таблиці «Товари», а потім повторіть друк.",
+            indicator: "orange",
+          });
+          return;
+        }
+
         const query = new URLSearchParams({
           doctype: "Supplier Invoice Import",
           name: frm.doc.name,
           format: "Imported Item Labels",
           no_letterhead: "1",
+          selected_rows: selected_names.join(","),
         });
         window.open(`/printview?${query.toString()}`, "_blank");
       }, __("Actions"));
